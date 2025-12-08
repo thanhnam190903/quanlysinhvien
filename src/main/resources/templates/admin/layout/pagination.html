@@ -1,0 +1,29 @@
+<div th:fragment="pagination(pageData, baseUrl, keyword)">
+    <ul class="pagination pagination-sm no-margin pull-right">
+
+        <!-- Prev -->
+        <li class="page-item" th:classappend="${pageData.first} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{${baseUrl}(page=${pageData.number - 1}, keyword=${keyword != null ? keyword : ''})}">
+                &laquo;
+            </a>
+        </li>
+
+        <!-- Pages -->
+        <li class="page-item" th:each="i : ${#numbers.sequence(0, pageData.totalPages - 1)}"
+            th:classappend="${i == pageData.number} ? 'active'">
+            <a class="page-link"
+               th:text="${i + 1}"
+               th:href="@{${baseUrl}(page=${i}, keyword=${keyword != null ? keyword : ''})}"></a>
+        </li>
+
+        <!-- Next -->
+        <li class="page-item" th:classappend="${pageData.last} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{${baseUrl}(page=${pageData.number + 1}, keyword=${keyword != null ? keyword : ''})}">
+                &raquo;
+            </a>
+        </li>
+
+    </ul>
+</div>

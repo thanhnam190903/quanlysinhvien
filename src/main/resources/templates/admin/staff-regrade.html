@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head"></head>
+<style>
+    .form-container {
+        max-width: 1224px;
+        background: #FFF;
+        border-radius: 12px;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.10), 0 1px 3px 0 rgba(0, 0, 0, 0.10);
+    }
+
+    .form-header {
+        padding: 25px;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .form-title {
+        color: #111827;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 28px;
+        margin-bottom: 4px;
+    }
+
+    .form-subtitle {
+        color: #6B7280;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+    }
+
+    .required {
+        color: #DC3545;
+    }
+
+    .form-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 25px;
+    }
+
+    .form-sections,
+    .form-sections-right {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .form-section {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .section-title {
+        color: #111827;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
+        padding-bottom: 9px;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-label {
+        color: #374151;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+    }
+
+    .form-input {
+        width: 100%;
+        height: 42px;
+        padding: 0 12px;
+        border-radius: 8px;
+        border: 1px solid #D1D5DB;
+        font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        color: #212529;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+        border-color: #4169B4;
+    }
+
+    .form-input::placeholder {
+        color: #6B7280;
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    .dropdown-arrow {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%) rotate(180deg);
+        pointer-events: none;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-textarea {
+        width: 100%;
+        min-height: 78px;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #D1D5DB;
+        font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        color: #212529;
+        outline: none;
+        resize: vertical;
+        transition: border-color 0.2s;
+    }
+
+    .form-textarea:focus {
+        border-color: #4169B4;
+    }
+
+    .form-textarea::placeholder {
+        color: #6B7280;
+        font-style: italic;
+    }
+
+    .character-count {
+        align-self: flex-end;
+        color: #6B7280;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 16px;
+    }
+
+    .payment-info {
+        border: 2px solid #D1D5DB;
+        border-radius: 8px;
+        padding: 17px;
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        min-height: 265px;
+    }
+
+    .qr-code {
+        width: 125px;
+        height: 125px;
+        flex-shrink: 0;
+    }
+
+    .payment-details {
+        color: #374151;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 20px;
+        white-space: pre-line;
+    }
+
+    .payment-details p {
+        margin: 0;
+    }
+
+    .file-upload {
+        border: 2px solid #D1D5DB;
+        border-radius: 8px;
+        min-height: 121px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: border-color 0.2s;
+    }
+
+    .file-upload:hover {
+        border-color: #4169B4;
+    }
+
+    .file-upload svg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .upload-text {
+        color: #374151;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        text-align: center;
+    }
+
+    .upload-hint {
+        color: #6B7280;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 16px;
+        text-align: center;
+    }
+
+    .notice-box {
+        background: #F9FAFB;
+        border-radius: 8px;
+        padding: 18px 16px;
+    }
+
+    .notice-title {
+        color: #6B7280;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        margin-bottom: 3px;
+    }
+
+    .notice-text {
+        color: #6B7280;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+    }
+
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 27px;
+        padding: 25px;
+        border-top: 1px solid #E5E7EB;
+    }
+
+    .btn {
+        height: 42px;
+        padding: 9px 24px;
+        border-radius: 8px;
+        font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+    }
+
+    .btn-cancel {
+        background: #FFF;
+        color: #374151;
+        border: 1px solid #D1D5DB;
+        min-width: 80px;
+    }
+
+    .btn-cancel:hover {
+        background: #F9FAFB;
+    }
+
+    .btn-draft {
+        background: #FFF;
+        color: #D97706;
+        border: 1px solid #D97706;
+        min-width: 112px;
+    }
+
+    .btn-draft:hover {
+        background: #FEF3C7;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #4169B4 0%, #5B7FB8 100%);
+        color: #FFF;
+        min-width: 191px;
+    }
+
+    .btn-submit:hover {
+        box-shadow: 0 4px 6px rgba(65, 105, 180, 0.3);
+        transform: translateY(-1px);
+    }
+
+</style>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div th:replace="admin/layout/navbar :: navbar"></div>
+
+        <div class="col-md-9 col-lg-9">
+                <main style="margin-top: 10px;">
+                    <div class="form-container">
+                        <div class="form-header">
+                            <h2 class="form-title">Tạo đơn phúc khảo mới</h2>
+                            <p class="form-subtitle">
+                                Điền đầy đủ thông tin để gửi đơn phúc khảo,<span class="required">*</span> là trường bắt buộc nhập
+                            </p>
+                        </div>
+
+                        <div class="form-content">
+                            <div class="form-sections">
+                                <section class="form-section">
+                                    <h3 class="section-title">📋 1. Thông tin định danh sinh viên</h3>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Họ và tên <span class="required">*</span></label>
+                                        <input type="text" class="form-input" th:value="${r.student.name}" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Mã số sinh viên (MSSV) <span class="required">*</span></label>
+                                        <input type="text" name="student.id" class="form-input" th:value="${r.student.id}" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Lớp<span class="required">*</span></label>
+                                        <input type="text" class="form-input" th:each="cl : ${r.student.classes}" th:value="${cl.name}" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Khoa<span class="required">*</span></label>
+                                        <input type="text" class="form-input" th:each="cl : ${r.student.classes}" th:value="${cl.department.name}" readonly>
+                                    </div>
+                                </section>
+
+                                <section class="form-section">
+                                    <h3 class="section-title">📘 2. Thông tin môn học được phúc khảo</h3>
+
+                                    <div class="form-group">
+                                        <input type="hidden" name="subject.id" class="form-input" th:value="${r.subject.id}" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Tên học phần <span class="required">*</span></label>
+                                        <div class="select-wrapper">
+                                            <input type="text" class="form-input" th:value="${r.subject.name}" readonly>
+                                            <svg class="dropdown-arrow" width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8.66028 0L17.3205 10.5H2.38419e-05L8.66028 0Z" fill="#6B7280"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">Số tín chỉ <span class="required">*</span></label>
+                                            <input type="text" class="form-input" th:value="${r.subject.credit}" readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label">Lần thi <span class="required">*</span></label>
+                                            <input type="text" class="form-input" th:each="sc : ${r.subject.scoreSubjects}" th:value="${sc.examAttempt}" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Học kỳ / Năm học <span class="required">*</span></label>
+                                        <input type="text" class="form-input" th:value="${r.subject.cycle.name}" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Điểm hiện tại <span class="required">*</span></label>
+                                        <input type="text" name="oldScore" class="form-input" th:value="${r.oldScore}" readonly>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <div class="form-sections-right">
+                                <section class="form-section">
+                                    <h3 class="section-title">🗒️ 3. Thông tin nội dung phúc khảo</h3>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Lý do phúc khảo <span class="required">*</span></label>
+                                        <textarea class="form-textarea"  th:text="${r.requestReason}" readonly></textarea>
+                                        <span class="character-count">0/1000</span>
+                                    </div>
+                                </section>
+
+                                <section class="form-section">
+                                    <h3 class="section-title">🗒️ 4. Thông tin chuyển khoản phúc khảo</h3>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Thông tin chuyển khoản</label>
+                                        <div class="payment-info">
+                                            <img th:src="@{'../assets/upload/' + ${r.paymentImage}}" style="margin-left:1rem;" width="400px" height="250px">
+                                        </div>
+                                    </div>
+
+                                </section>
+                            </div>
+                        </div>
+
+                        <div class="form-footer">
+                            <a th:href="@{/staff/regrades-staff}" class="btn btn-cancel">Hủy</a>
+                            <a data-bs-toggle="modal"  data-bs-target="#rejectModal" class="text-danger" ></a>
+                            <input th:if="${r.status != 'Đã duyệt hồ sơ'}" th:data-id="${r.id}" value="Từ chối" class="btn btn-draft upRegrade">
+                            <input th:if="${r.status != 'Đã duyệt hồ sơ'}" th:data-id="${r.id}" onclick="confirmAgree(this)" value="Phê duyệt" class="btn btn-submit">
+                        </div>
+                    </div>
+                </main>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content custom-modal">
+
+            <div class="modal-header custom-header">
+                <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+                <div>
+                    <h1 class="modal-title">Từ chối đơn xin phúc khảo</h1>
+                    <p class="modal-subtitle">Chọn lý do từ chối đơn xin phúc khảo của sinh viên</p>
+                </div>
+            </div>
+            <form th:action="@{/staff/refuse}" method="post">
+                <div class="modal-body">
+
+                    <div class="warning-box">
+                        <svg class="warning-icon" width="19" height="17" viewBox="0 0 19 17" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                  d="M7.00783 1.224C7.92583 -0.408 10.2742 -0.408 11.191 1.224L17.887 13.128C18.787 14.7288 17.6314 16.704 15.7966 16.704H2.40343C0.567428 16.704 -0.588173 14.7288 0.311827 13.128L7.00783 1.224ZM10.2994 13.1052C10.2994 13.4235 10.173 13.7287 9.94796 13.9537C9.72291 14.1788 9.41769 14.3052 9.09943 14.3052C8.78117 14.3052 8.47594 14.1788 8.2509 13.9537C8.02586 13.7287 7.89943 13.4235 7.89943 13.1052C7.89943 12.7869 8.02586 12.4817 8.2509 12.2567C8.47594 12.0316 8.78117 11.9052 9.09943 11.9052C9.41769 11.9052 9.72291 12.0316 9.94796 12.2567C10.173 12.4817 10.2994 12.7869 10.2994 13.1052ZM9.09943 3.5052C8.78117 3.5052 8.47594 3.63163 8.2509 3.85667C8.02586 4.08172 7.89943 4.38694 7.89943 4.7052V8.3052C7.89943 8.62346 8.02586 8.92868 8.2509 9.15373C8.47594 9.37877 8.78117 9.5052 9.09943 9.5052C9.41769 9.5052 9.72291 9.37877 9.94796 9.15373C10.173 8.92868 10.2994 8.62346 10.2994 8.3052V4.7052C10.2994 4.38694 10.173 4.08172 9.94796 3.85667C9.72291 3.63163 9.41769 3.5052 9.09943 3.5052Z"
+                                  fill="#DC3545"/>
+                        </svg>
+
+                        <div>
+                            <h2 class="warning-title">Lưu ý quan trọng</h2>
+                            <p class="warning-text">
+                                Việc từ chối đơn xin phúc khảo sẽ được ghi nhận vào hệ thống và thông báo tự động đến sinh viên qua email.
+                                Vui lòng chọn lý do phù hợp và chính xác.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title mt-3">Lý do từ chối:</h3>
+
+                    <div class="radio-options">
+                        <label class="radio-option">
+                            <input type="hidden" id="edit-id" name="id" class="radio-input">
+                            <input type="radio" name="trainingNote" class="radio-input">
+                            <span>Không nộp lệ phí phúc khảo</span>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="trainingNote" class="radio-input">
+                            <span>Bài thi không được lưu trữ hoặc không đủ điều kiện để phúc khảo</span>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="trainingNote" class="radio-input">
+                            <span>Kết quả đã được chấm lại và không có sai sót nào</span>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="trainingNote" class="radio-input">
+                            <span>Sinh viên không có mặt khi được yêu cầu đối chiếu bài thi</span>
+                        </label>
+
+                        <label class="radio-option d-block">
+                            <input type="radio" name="" class="radio-input reason-other" value="other" required>
+                            <span>Khác (vui lòng mô tả chi tiết)</span>
+                        </label>
+                    </div>
+                    <textarea id="other-reason-text" name="trainingNote" class="reason-textarea form-control mt-2" placeholder="Nhập lý do từ chối tại đây..." disabled></textarea>
+
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmAgree(element) {
+    const khoaId = element.dataset.id;
+    if (confirm("Bạn có chắc chắn muốn phê duyệt hay không")) {
+        window.location.href = "/qlsv/staff/agree?ids=" + khoaId;
+    }
+}
+
+     document.querySelectorAll(".upRegrade").forEach(btn => {
+    btn.addEventListener("click", function () {
+        document.getElementById("edit-id").value = this.dataset.id;
+        new bootstrap.Modal(document.getElementById('rejectModal')).show();
+    });
+});
+</script>
+</body>
+</html>

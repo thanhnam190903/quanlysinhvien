@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head"></head>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div th:replace="admin/layout/navbar :: navbar"></div>
+        <div class="col-md-9 col-lg-9 main-content">
+            <div class="content-header">
+                <h2>Danh sách môn học</h2>
+            </div>
+
+            <div class="search-container">
+                <form method="get" th:action="@{/staff/subject}">
+                    <input type="text" name="keyword" class="search-input" placeholder="Tìm kiếm theo tên " value="${keyword != null ? keyword : ''}" th:value="${keyword}">
+                    <button class="btn-search" type="submit">Tìm</button>
+                </form>
+                <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">Thêm mới</a>
+            </div>
+
+            <div class="table-container">
+                <div th:if="${successMessage}" class="alert alert-success">
+                    <span th:text="${successMessage}"></span>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên môn</th>
+                        <th>Học kỳ</th>
+                        <th>Giảng viên</th>
+                        <th>Số tín chỉ</th>
+                        <th>Hệ số 1</th>
+                        <th>Hệ số 2</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s,iterStat : ${subjectList}">
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${s.name}"></td>
+                        <td th:text="${s.cycle.name}"></td>
+                        <td th:text="${s.user.name}"></td>
+                        <td th:text="${s.credit}"></td>
+                        <td th:text="${s.processCoefficient}"></td>
+                        <td th:text="${s.examCoefficient}"></td>
+                        <td th:if="${!s.status}" style="color: red; font-weight: bold;">Tạm dừng</td>
+                        <td th:if="${s.status}" style="color: green;  font-weight: bold;">Hoạt động</td>
+                        <td>
+                            <div class="action-icons">
+                                <div class="action-icons">
+                                    <a class="text-success" th:attr="data-bs-target='#configModal' + ${s.id}" data-bs-toggle="modal"><i class="far fa-eye"></i></a>
+                                    <a href="" class="text-success" data-bs-toggle="modal" data-bs-target="#updateDepartmentModal"></a>
+                                    <a class="btn-edit" th:data-id="${s.id}" th:data-fullname="${s.name}" th:data-status="${s.status}"
+                                       th:data-cycle="${s.cycle.id}" th:data-teacher="${s.user.id}" th:data-numberone="${s.processCoefficient}"
+                                       th:data-numbertwo="${s.examCoefficient}" th:data-credit="${s.credit}">
+                                        <i class="fa-regular fa-pen-to-square text-success"></i></a>
+                                    <a href="#" th:data-id="${s.id}" onclick="confirmDelete(this)" class="text-danger"><i class="fa-solid fa-trash"></i></a>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:replace="~{admin/layout/pagination :: pagination(pageData=${subjectList}, baseUrl='/staff/subject', keyword=${keyword})}"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addDepartmentModal" tabindex="-1"
+     aria-labelledby="addDepartmentModal" aria-hidden="true" th:classappend="${showModal} ? 'show d-block' : ''">
+    <div class="modal-dialog modal-md"><!-- nhỏ hơn modal-lg -->
+        <div class="modal-content">
+            <div class="modal-header btn-search">
+                <h5 class="modal-title" id="addDepartmentModalLabel">Thêm mới môn học</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form thêm người dùng -->
+                <form id="addUserForm" th:action="@{/staff/add-subject}" th:object="${subject}" method="post">
+                    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+                        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                    </div>
+                    <div class="g-2">
+                        <div class="col-12 mb-2">
+                            <label class="form-label">Tên</label>
+                            <input type="text" th:field="*{name}" class="form-control" name="ten" required>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label">Học kỳ</label>
+                            <select class="form-control" th:field="*{cycle.id}">
+                                <option th:each="cy : ${cycleList}" th:value="${cy.id}" th:text="${cy.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label">Giảng viên phụ trách</label>
+                            <select class="form-control" th:field="*{user.id}">
+                                <option th:each="te : ${teacherList}" th:value="${te.id}" th:text="${te.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-2 d-flex gap-1">
+                            <div class="col-6 mb2">
+                                <label class="form-label">Hệ số 1</label>
+                                <input type="number" min="0.1" max="0.6" step="0.1" placeholder="Nhập điểm hệ số (0.1 - 0.6)" class="form-control"
+                                       th:field="*{processCoefficient}" required>
+                            </div>
+                            <div class="col-6 mb2">
+                                <label class="form-label">Hệ số 2</label>
+                                <input type="number" min="0.1" max="0.6" step="0.1" placeholder="Nhập điểm hệ số (0.1 - 0.6)" class="form-control"
+                                       th:field="*{examCoefficient}" required>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-2 d-flex gap-1">
+                            <div class="col-6 mb-2">
+                                <label class="form-label">Số tín chỉ</label>
+                                <input type="number" min="0" class="form-control" th:field="*{credit}" required>
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="form-label">Chọn trạng thái</label>
+                                <select class="form-control" th:field="*{status}">
+                                    <option th:value="true" class="text-success">Hoạt động</option>
+                                    <option th:value="false" class="text-danger">Dừng hoạt động</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex mt-3 gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">Thêm mới</button>
+                        <a type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">Thoát</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateDepartmentModal" tabindex="-1"
+     aria-labelledby="updateDepartmentModalLabel" aria-hidden="true" th:classappend="${showModals} ? 'show d-block' : ''">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header btn-search">
+                <h5 class="modal-title" id="updateDepartmentModalLabel">Thay đổi thông tin khoa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form thêm người dùng -->
+                <form id="editForm" th:action="@{/staff/update-subject}" method="post">
+                    <span class="text-danger mt-1" id="error-msg"></span>
+                    <input type="hidden" class="form-control" id="edit-id" name="id" required>
+                    <div class="col-12 mb-2">
+                        <label class="form-label">Tên</label>
+                        <input type="text" class="form-control" id="edit-fullname" name="name" required>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <label class="form-label">Học kỳ</label>
+                        <select class="form-control" id="edit-cycle" name="cycle.id">
+                            <option th:each="cy : ${cycleList}" th:value="${cy.id}" th:text="${cy.name}"></option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <label class="form-label">Giảng viên phụ trách</label>
+                        <select class="form-control" id="edit-teacher" name="user.id">
+                            <option th:each="te : ${teacherList}" th:value="${te.id}" th:text="${te.name}"></option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-2 d-flex gap-1">
+                        <div class="col-6 mb2">
+                            <label class="form-label">Hệ số 1</label>
+                            <input type="number" id="edit-numberone" min="0.1" max="0.6" step="0.1" placeholder="Nhập điểm hệ số (0.1 - 0.6)" class="form-control"
+                                   name="processCoefficient" required>
+                        </div>
+                        <div class="col-6 mb2">
+                            <label class="form-label">Hệ số 2</label>
+                            <input type="number" id="edit-numbertwo" min="0.1" max="0.6" step="0.1" placeholder="Nhập điểm hệ số (0.1 - 0.6)" class="form-control"
+                                   name="examCoefficient" required>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2 d-flex gap-1">
+                        <div class="col-6 mb-2">
+                            <label class="form-label">Số tín chỉ</label>
+                            <input type="number" id="edit-credit" min="0" class="form-control" name="credit" required>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <label class="form-label">Chọn trạng thái</label>
+                            <select class="form-control" id="edit-status" name="status">
+                                <option th:value="true" class="text-success">Hoạt động</option>
+                                <option th:value="false" class="text-danger">Dừng hoạt động</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex mt-3 gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">Cập nhật</button>
+                        <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" th:each="s : ${subjectList}" th:classappend="${show} ? 'show d-block' : ''" th:id="'configModal' + ${s.id}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; overflow: hidden;">
+
+            <!-- Header -->
+            <div class="modal-header" style="background: #D8E7FF; border-bottom: 1px solid #2E5DA1;">
+                <div>
+                    <h1 class="modal-title fs-4 mb-1" th:text="${s.name}"></h1>
+                    <div class="d-flex gap-3 small text-dark">
+                        <span th:text="${s.cycle.name}"></span>
+                        <span th:text="${s.user.name}"></span>
+                    </div>
+                </div>
+                <span class="badge bg-danger p-2" th:if="${!s.status}" >Đã kết thúc</span>
+                <span class="badge bg-success p-2" th:if="${s.status}" >Hoạt động</span>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body px-4">
+
+                <h5 class="fw-semibold mb-4">Cấu hình</h5>
+
+                <div class="d-flex gap-4">
+
+                    <!-- Timeline Bar -->
+                    <div class="position-relative" style="width: 48px;">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center"
+                             style="width:48px;height:48px;background:#2E5DA1;border:4px solid white;">
+                            <i class="bi bi-pencil-fill text-white fs-5"></i>
+                        </div>
+
+                        <div style="position:absolute;left:24px;top:64px;width:2px;height:310px;background:#2E5DA1;"></div>
+
+                        <div class="rounded-circle d-flex align-items-center justify-content-center mt-4"
+                             style="width:48px;height:48px;background:#2E5DA1;border:4px solid white;margin-top:155px;">
+                            <i class="bi bi-file-earmark-text-fill text-white fs-5"></i>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Content -->
+                    <div class="flex-grow-1 d-flex flex-column gap-4">
+
+                        <!-- Card 1 -->
+                        <div class="border rounded p-3" style="border-color:#2E5DA1;">
+                            <div class="d-flex justify-content-between mb-3">
+                                <div>
+                                    <h5 class="mb-1">Thời Gian Sửa Điểm</h5>
+                                    <p class="text-muted small mb-0">Thời gian giảng viên sửa điểm</p>
+                                </div>
+                                <a href="" class="text-success" data-bs-toggle="modal" data-bs-target="#regradeModal"></a>
+                                <button class="btn btn-sm text-white open-score-btn" th:data-id="${s.id}" style="background:#2E5DA1;" th:if="${s.startDate == null}">Thêm mới</button>
+                                <a href="" class="text-success" data-bs-toggle="modal" data-bs-target="#scoreUpdateModal"></a>
+                                <button class="btn btn-sm text-white update-score-btn" th:data-id="${s.id}" th:date-start="${s.startDate}" th:data-end="${s.endDate}"
+                                        style="background:#2E5DA1;" th:if="${s.startDate != null}">Chỉnh sửa</button>
+                            </div>
+
+                            <div class="d-flex gap-5">
+                                <div>
+                                    <div class="text-muted small">NGÀY BẮT ĐẦU</div>
+                                    <div class="fw-semibold" th:text="${s.startDate != null ? #temporals.format(s.startDate, 'dd/MM/yyyy') : 'Chưa thêm thời gian'}"></div>
+                                </div>
+                                <div>
+                                    <div class="text-muted small">NGÀY KẾT THÚC</div>
+                                    <div class="fw-semibold" th:text="${s.endDate != null ? #temporals.format(s.endDate, 'dd/MM/yyyy') : 'Chưa thêm thời gian'}"></div>
+                                </div>
+                                <div>
+                                    <div class="text-muted small">THỜI GIAN CÒN LẠI</div>
+                                    <div class="fw-semibold" th:text="${s.endDate != null ? (T(java.time.LocalDate).now().isAfter(s.endDate) ? 'Đã kết thúc' : 'Đang diễn ra') : 'Chưa thêm thời gian'}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="border rounded p-3" style="border-color:#2E5DA1;">
+                            <div class="d-flex justify-content-between mb-3">
+                                <div>
+                                    <h5 class="mb-1">Thời Gian Phúc Khảo</h5>
+                                    <p class="text-muted small mb-0">Sinh viên nộp đơn phúc khảo điểm</p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-5">
+                                <div>
+                                    <div class="text-muted small">NGÀY BẮT ĐẦU</div>
+                                    <div class="fw-semibold" th:text="${s.regradeStart != null ? #temporals.format(s.regradeStart, 'dd/MM/yyyy') : 'Chưa thêm thời gian'}"></div>
+                                </div>
+                                <div>
+                                    <div class="text-muted small">NGÀY KẾT THÚC</div>
+                                    <div class="fw-semibold" th:text="${s.regradeEnd != null ? #temporals.format(s.regradeEnd, 'dd/MM/yyyy') : 'Chưa thêm thời gian'}"></div>
+                                </div>
+                                <div>
+                                    <div class="text-muted small">THỜI GIAN CÒN LẠI</div>
+                                    <div class="fw-semibold" th:text="${s.regradeEnd != null ? (T(java.time.LocalDate).now().isAfter(s.regradeEnd) ? 'Đã kết thúc' : 'Đang diễn ra') : 'Chưa thêm thời gian'}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Instructions -->
+                <div class="border rounded p-3 mt-4" style="background:#F8FAFC;">
+                    <h6 class="fw-semibold mb-3">Hướng Dẫn</h6>
+
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="rounded-circle" style="width:8px;height:8px;background:#22C55E;"></span>
+                        <span class="fw-semibold">Thời gian sửa điểm:</span>
+                        <span class="text-muted small">Giảng viên chỉnh sửa điểm</span>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="rounded-circle" style="width:8px;height:8px;background:#F59E0B;"></span>
+                        <span class="fw-semibold">Thời gian phúc khảo:</span>
+                        <span class="text-muted small">Sinh viên nộp đơn phúc khảo</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="scoreAddModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:500px;z-index: 1055;">
+        <div class="modal-content" style="border-radius:12px; overflow:hidden;">
+
+            <!-- Header -->
+            <div class="modal-header" style="background:#D8E7FF; border-bottom:1px solid #2E5DA1; height:100px;">
+                <div>
+                    <h5 class="modal-title fw-bold" style="font-size:20px;">Cài đặt thời gian sửa điểm</h5>
+                    <p class="mb-0" style="font-size:14px; color:#64748B;">Thiết lập thời gian giảng viên có thể sửa điểm</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/staff/add-time-subject}" method="post">
+            <!-- Body -->
+            <div class="modal-body d-flex gap-3 pt-3">
+
+                <!-- Ngày bắt đầu -->
+                <div class="flex-fill">
+                    <label class="form-label fw-semibold">Ngày bắt đầu</label>
+                    <div class="input-group">
+                        <input type="hidden" name="id" id="edit-score-id">
+                        <input type="date" name="startDate" class="form-control" required>
+                        <span class="input-group-text bg-transparent border-0"></span>
+                    </div>
+                </div>
+
+                <!-- Ngày kết thúc -->
+                <div class="flex-fill">
+                    <label class="form-label fw-semibold">Ngày kết thúc</label>
+                    <div class="input-group">
+                        <input type="date" name="endDate" class="form-control" required>
+                        <span class="input-group-text bg-transparent border-0"></span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="scoreUpdateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:500px;z-index: 1055;">
+        <div class="modal-content" style="border-radius:12px; overflow:hidden;">
+
+            <!-- Header -->
+            <div class="modal-header" style="background:#D8E7FF; border-bottom:1px solid #2E5DA1; height:100px;">
+                <div>
+                    <h5 class="modal-title fw-bold" style="font-size:20px;">Cài đặt thời gian sửa điểm</h5>
+                    <p class="mb-0" style="font-size:14px; color:#64748B;">Thiết lập thời gian giảng viên có thể sửa điểm</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/staff/add-time-subject}" method="post">
+                <!-- Body -->
+                <div class="modal-body d-flex gap-3 pt-3">
+
+                    <!-- Ngày bắt đầu -->
+                    <div class="flex-fill">
+                        <label class="form-label fw-semibold">Ngày bắt đầu</label>
+                        <div class="input-group">
+                            <input type="hidden" name="id" id="update-score-id">
+                            <input type="date" id="edit-dateone" name="startDate" class="form-control" required>
+                            <span class="input-group-text bg-transparent border-0"></span>
+                        </div>
+                    </div>
+
+                    <!-- Ngày kết thúc -->
+                    <div class="flex-fill">
+                        <label class="form-label fw-semibold">Ngày kết thúc</label>
+                        <div class="input-group">
+                            <input type="date" id="edit-datetwo" name="endDate" class="form-control" required>
+                            <span class="input-group-text bg-transparent border-0"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Bootstrap Bundle JS (đã bao gồm Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmDelete(element) {
+    const subjectId = element.dataset.id;
+    if (confirm("Bạn có chắc chắn muốn xóa môn học " + subjectId + " này?")) {
+        window.location.href = "/qlsv/staff/delete-subject?id=" + subjectId;
+    }
+}
+
+    document.querySelectorAll(".btn-edit").forEach(btn => {
+    btn.addEventListener("click", function () {
+        document.getElementById("edit-id").value = this.dataset.id;
+        document.getElementById("edit-fullname").value = this.dataset.fullname;
+        document.getElementById("edit-status").value = this.dataset.status;
+        document.getElementById("edit-cycle").value = this.dataset.cycle;
+        document.getElementById("edit-teacher").value = this.dataset.teacher;
+        document.getElementById("edit-numberone").value = this.dataset.numberone;
+        document.getElementById("edit-numbertwo").value = this.dataset.numbertwo;
+        document.getElementById("edit-credit").value = this.dataset.credit;
+
+        new bootstrap.Modal(document.getElementById('updateDepartmentModal')).show();
+    });
+});
+    document.getElementById("editForm").addEventListener("submit", function (e) {
+
+    let n1 = parseFloat(document.getElementById("edit-numberone").value);
+    let n2 = parseFloat(document.getElementById("edit-numbertwo").value);
+
+    if (isNaN(n1)) n1 = 0;
+    if (isNaN(n2)) n2 = 0;
+
+    const errorBox = document.getElementById("error-msg");
+
+    // Kiểm tra tổng = 1
+    if (n1 + n2 !== 1) {
+        e.preventDefault(); // chặn submit
+        errorBox.innerText = "⚠ Tổng hệ số quá trình + hệ số thi phải bằng 1!";
+        return false;
+    }
+
+    // Nếu hợp lệ -> xóa lỗi
+    errorBox.innerText = "";
+});
+   document.querySelectorAll(".open-score-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+        document.getElementById("edit-score-id").value = this.dataset.id;
+        new bootstrap.Modal(document.getElementById('scoreAddModal')).show();
+    });
+});
+    document.querySelectorAll(".update-score-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+           console.log(this.dataset.start);
+        document.getElementById("update-score-id").value = this.dataset.id;
+        document.getElementById("edit-dateone").value = this.dataset.start;
+        document.getElementById("edit-datetwo").value = this.dataset.end;
+        new bootstrap.Modal(document.getElementById('scoreUpdateModal')).show();
+    });
+});
+</script>
+</body>
+</html>

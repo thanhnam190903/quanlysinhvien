@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head">
+</head>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div th:replace="admin/layout/navbar :: navbar"></div>
+
+        <div class="col-md-9 col-lg-9">
+            <main class="main-content">
+                <section class="summary-section">
+                    <div class="summary-cards">
+                        <div class="summary-card summary-card-blue">
+                            <div class="summary-card-content">
+                                <div class="card-label">TỔNG MÔN HỌC</div>
+                                <div class="card-value" th:text="${totalSubjects}"></div>
+                            </div>
+                            <div class="card-icon card-icon-blue">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 19V17H14V19H4ZM4 15V13H20V15H4ZM4 11V9H20V11H4ZM4 7V5H20V7H4Z" fill="white"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="summary-card summary-card-green">
+                            <div class="summary-card-content">
+                                <div class="card-label">XẾP LOẠI</div>
+                                <div class="card-value" th:text="${overallStatus}"></div>
+                            </div>
+                            <div class="card-icon card-icon-green">
+                                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.29014 9.88523H6.00014L10.5601 5.32523L9.85014 4.61523L5.65014 8.82523L3.73014 6.90523L3.02014 7.61523L5.29014 9.88523Z" fill="white"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.62014 0.015C9.22014 0.115 10.7201 0.915 11.8201 2.015C13.1201 3.415 13.8201 5.115 13.8201 7.115C13.8201 8.715 13.2201 10.215 12.2201 11.515C11.2201 12.715 9.82014 13.615 8.22014 13.915C6.62014 14.215 5.02014 14.015 3.62014 13.215C2.22014 12.415 1.12014 11.215 0.520139 9.715C-0.0798609 8.215 -0.179861 6.515 0.320139 5.015C0.820139 3.415 1.72014 2.115 3.12014 1.215C4.42014 0.315 6.02014 -0.085 7.62014 0.015ZM8.12014 12.915C9.42014 12.615 10.6201 11.915 11.5201 10.815C12.3201 9.715 12.8201 8.415 12.7201 7.015C12.7201 5.415 12.1201 3.815 11.0201 2.715C10.0201 1.715 8.82014 1.115 7.42014 1.015C6.12014 0.915 4.72014 1.215 3.62014 2.015C2.52014 2.815 1.72014 3.915 1.32014 5.315C0.920139 6.615 0.920139 8.015 1.52014 9.315C2.12014 10.615 3.02014 11.615 4.22014 12.315C5.42014 13.015 6.82014 13.215 8.12014 12.915Z" fill="white"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="summary-card summary-card-orange">
+                            <div class="summary-card-content">
+                                <div class="card-label">ĐIỂM TRUNG BÌNH HỆ SỐ 4</div>
+                                <div class="card-value" th:text="${overallAvgScore4}"></div>
+                            </div>
+                            <div class="card-icon card-icon-orange">
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.48257 0.69075C6.78257 -0.23025 8.08557 -0.23025 8.38457 0.69075L9.45457 3.98275C9.51994 4.18324 9.64702 4.35793 9.81764 4.48185C9.98826 4.60578 10.1937 4.67259 10.4046 4.67275H13.8666C14.8356 4.67275 15.2376 5.91275 14.4546 6.48275L11.6546 8.51675C11.4836 8.64078 11.3563 8.81576 11.2909 9.0166C11.2255 9.21745 11.2254 9.43384 11.2906 9.63475L12.3606 12.9268C12.6606 13.8477 11.6056 14.6147 10.8206 14.0448L8.02057 12.0107C7.84977 11.8868 7.64413 11.82 7.43307 11.82C7.22201 11.82 7.01636 11.8868 6.84557 12.0107L4.04557 14.0448C3.26157 14.6147 2.20757 13.8477 2.50657 12.9268L3.57657 9.63475C3.64174 9.43384 3.64163 9.21745 3.57623 9.0166C3.51084 8.81576 3.38354 8.64078 3.21257 8.51675L0.413568 6.48375C-0.369432 5.91375 0.033568 4.67375 1.00157 4.67375H4.46257C4.67362 4.67381 4.87927 4.60709 5.05009 4.48315C5.22091 4.35921 5.34814 4.1844 5.41357 3.98375L6.48357 0.69175L6.48257 0.69075Z" fill="white"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="summary-card summary-card-purple">
+                            <div class="summary-card-content">
+                                <div class="card-label">ĐIỂM TRUNG BÌNH HỆ SỐ 10</div>
+                                <div class="card-value" th:text="${overallAvgScore10}"></div>
+                            </div>
+                            <div class="card-icon card-icon-purple">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2.90909 9.04889V12.6044L8 16L13.0909 12.6044V9.04889L8 12.4444L2.90909 9.04889ZM8 0L0 5.33333L8 10.6667L14.5455 6.30222V12.4444H16V5.33333L8 0Z" fill="white"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="semester-section" th:each="cycle, iterStat : ${cycles}">
+                    <div class="semester-header">
+                        <h2 class="semester-title" th:text="${cycle.name}" style="width: 60rem;"></h2>
+                    </div>
+
+                    <div class="semester-stats">
+                        <div class="stat-card stat-card-blue">
+                            <div class="stat-content">
+                                <div class="stat-label">ĐIỂM TRUNG BÌNH HỆ SỐ 10</div>
+                                <div class="stat-value" th:text="${avgScore10ByCycle.get(cycle.id)}"></div>
+                            </div>
+                            <div class="stat-icon stat-icon-blue">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 19V17H14V19H4ZM4 15V13H20V15H4ZM4 11V9H20V11H4ZM4 7V5H20V7H4Z" fill="white"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="stat-card stat-card-green">
+                            <div class="stat-content">
+                                <div class="stat-label">ĐIỂM TRUNG BÌNH HỆ SỐ 4</div>
+                                <div class="stat-value" th:text="${avgScore4ByCycle.get(cycle.id)}"></div>
+                            </div>
+                            <div class="stat-icon stat-icon-green">
+                                <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5.29014 9.88523H6.00014L10.5601 5.32523L9.85014 4.61523L5.65014 8.82523L3.73014 6.90523L3.02014 7.61523L5.29014 9.88523Z" fill="white"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.62014 0.015C9.22014 0.115 10.7201 0.915 11.8201 2.015C13.1201 3.415 13.8201 5.115 13.8201 7.115C13.8201 8.715 13.2201 10.215 12.2201 11.515C11.2201 12.715 9.82014 13.615 8.22014 13.915C6.62014 14.215 5.02014 14.015 3.62014 13.215C2.22014 12.415 1.12014 11.215 0.520139 9.715C-0.0798609 8.215 -0.179861 6.515 0.320139 5.015C0.820139 3.415 1.72014 2.115 3.12014 1.215C4.42014 0.315 6.02014 -0.085 7.62014 0.015ZM8.12014 12.915C9.42014 12.615 10.6201 11.915 11.5201 10.815C12.3201 9.715 12.8201 8.415 12.7201 7.015C12.7201 5.415 12.1201 3.815 11.0201 2.715C10.0201 1.715 8.82014 1.115 7.42014 1.015C6.12014 0.915 4.72014 1.215 3.62014 2.015C2.52014 2.815 1.72014 3.915 1.32014 5.315C0.920139 6.615 0.920139 8.015 1.52014 9.315C2.12014 10.615 3.02014 11.615 4.22014 12.315C5.42014 13.015 6.82014 13.215 8.12014 12.915Z" fill="white"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="stat-card stat-card-yellow">
+                            <div class="stat-content">
+                                <div class="stat-label">SỐ MÔN HỌC LẠI</div>
+                                <div class="stat-value" th:text="${regradeCountByCycle.get(cycle.id)}"></div>
+                            </div>
+                            <div class="stat-icon stat-icon-yellow">
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.48257 0.69075C6.78257 -0.23025 8.08557 -0.23025 8.38457 0.69075L9.45457 3.98275C9.51994 4.18324 9.64702 4.35793 9.81764 4.48185C9.98826 4.60578 10.1937 4.67259 10.4046 4.67275H13.8666C14.8356 4.67275 15.2376 5.91275 14.4546 6.48275L11.6546 8.51675C11.4836 8.64078 11.3563 8.81576 11.2909 9.0166C11.2255 9.21745 11.2254 9.43384 11.2906 9.63475L12.3606 12.9268C12.6606 13.8477 11.6056 14.6147 10.8206 14.0448L8.02057 12.0107C7.84977 11.8868 7.64413 11.82 7.43307 11.82C7.22201 11.82 7.01636 11.8868 6.84557 12.0107L4.04557 14.0448C3.26157 14.6147 2.20757 13.8477 2.50657 12.9268L3.57657 9.63475C3.64174 9.43384 3.64163 9.21745 3.57623 9.0166C3.51084 8.81576 3.38354 8.64078 3.21257 8.51675L0.413568 6.48375C-0.369432 5.91375 0.033568 4.67375 1.00157 4.67375H4.46257C4.67362 4.67381 4.87927 4.60709 5.05009 4.48315C5.22091 4.35921 5.34814 4.1844 5.41357 3.98375L6.48357 0.69175L6.48257 0.69075Z" fill="white"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>TÊN HỌC PHẦN</th>
+                                <th>SỐ TÍN CHỈ</th>
+                                <th>LẦN HỌC</th>
+                                <th>LẦN THI</th>
+                                <th>ĐIỂM HỆ 10</th>
+                                <th>ĐIỂM HỆ 4</th>
+                                <th>ĐIỂM CHỮ</th>
+                                <th>ĐÁNH GIÁ</th>
+                                <th>GHI CHÚ</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="score, scoreStat : ${scoresByCycle.get(cycle.id)}">
+                                <td th:text="${scoreStat.index + 1}"></td>
+                                <td th:text="${score.subject.name}"></td>
+                                <td th:text="${score.subject.credit}"></td>
+                                <td th:text="${score.attempt}"></td>
+                                <td th:text="${score.examAttempt}"></td>
+                                <td th:text="${score.totalScore}"></td>
+                                <td th:text="${#numbers.formatDecimal(T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.5 ? 4.0 :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.0 ? 3.5 :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 7.0 ? 3.0 :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 6.5 ? 2.5 :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 5.5 ? 2.0 :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 5.0 ? 1.5 :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 4.0 ? 1.0 : 0)))))), 1, 1)}"></td>
+                                <td th:text="${T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.5 ? 'A' :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.0 ? 'B+' :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 7.0 ? 'B' :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 6.5 ? 'C+' :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 5.5 ? 'C' :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 5.0 ? 'D+' :
+                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 4.0 ? 'D' : 'F'))))))}"></td>
+                                <td class="table-cell">
+                                    <span th:if="${score.totalScore != null and score.totalScore >= 4.0}"
+                                          class="status-badge status-pass text-success">Đạt</span>
+                                    <span th:if="${score.totalScore == null or score.totalScore < 4.0}"
+                                          class="status-badge status-fail text-danger">Không đạt</span>
+                                </td>
+                                <td class="" th:text="${score.description ?: '-'}">-</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Bootstrap + Custom CSS inline -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

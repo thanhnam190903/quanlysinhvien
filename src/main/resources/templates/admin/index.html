@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head"></head>
+<style>
+
+</style>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+
+<div class="container-fluid p-0">
+ <div class="row m-0">
+  <div th:replace="admin/layout/navbar :: navbar"></div>
+
+  <div class="col-md-9 col-lg-9 main-content">
+   <div class="content-header">
+    <h2>Danh sách thống kê</h2>
+   </div>
+
+   <div class="table-container">
+    <div class="row">
+     <!-- Thống kê học viên Card -->
+     <div class="col-xxl-4 col-md-6 mb-4">
+      <div class="card info-card sales-card">
+       <div class="card-body">
+        <h5 class="card-title">Học viên <span>| Tổng số</span></h5>
+        <div class="d-flex align-items-center">
+         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="fa-solid fa-person"></i>
+         </div>
+         <div class="ps-3">
+          <h6></h6>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+
+     <!-- Thống kê giáo viên Card -->
+     <div class="col-xxl-4 col-md-6 mb-4">
+      <div class="card info-card revenue-card">
+       <div class="card-body">
+        <h5 class="card-title">Giáo viên <span>| Tổng số</span></h5>
+        <div class="d-flex align-items-center">
+         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="fa-solid fa-person"></i>
+         </div>
+         <div class="ps-3">
+          <h6></h6>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+
+     <!-- Thống kê lớp học Card -->
+     <div class="col-xxl-4 col-md-6 mb-4">
+      <div class="card info-card customers-card">
+       <div class="card-body">
+        <h5 class="card-title">Lớp học <span>| Tổng số</span></h5>
+        <div class="d-flex align-items-center">
+         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+          <i class="fa-solid fa-landmark"></i>
+         </div>
+         <div class="ps-3">
+          <h6></h6>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

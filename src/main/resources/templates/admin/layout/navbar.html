@@ -1,0 +1,52 @@
+<div class="col-md-3 col-lg-3 sidebar" th:fragment="navbar">
+    <div class="sidebar-item">
+        <a th:href="@{/quantri/profile}" sec:authorize="hasRole('admin')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/teacher/profile}" sec:authorize="hasRole('teacher')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/student/profile}" sec:authorize="hasRole('student')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/staff/profile}" sec:authorize="hasRole('staff')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/quantri/teachers}" sec:authorize="hasRole('admin')" th:classappend="${activePage == 'teacher'} ? 'active' : ''">Quản lý giáo viên</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/quantri/students}" sec:authorize="hasRole('admin')" th:classappend="${activePage == 'student'} ? 'active' : ''">Quản lý sinh viên</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/quantri/staff}" sec:authorize="hasRole('admin')" th:classappend="${activePage == 'staff'} ? 'active' : ''">Quản lý tài khoản phòng đào tạo</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/staff/departments}" sec:authorize="hasRole('staff')" th:classappend="${activePage == 'department'} ? 'active' : ''">Quản lý khoa</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/staff/cycles}" sec:authorize="hasRole('staff')" th:classappend="${activePage == 'cycle'} ? 'active' : ''">Quản lý học kỳ</a>
+    </div>
+
+    <div class="sidebar-item">
+        <a th:href="@{/staff/subject}" sec:authorize="hasRole('staff')" th:classappend="${activePage == 'subject'} ? 'active' : ''">Quản lý môn học</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/staff/regrades-staff}" sec:authorize="hasRole('staff')" th:classappend="${activePage == 'regrade-staff'} ? 'active' : ''">Quản lý phúc khảo sinh viên</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/teacher/class-teacher}" sec:authorize="hasRole('teacher')" th:classappend="${activePage == 'class'} ? 'active' : ''">Quản lý lớp học phần quản lý</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/teacher/regrades-teacher}" sec:authorize="hasRole('teacher')" th:classappend="${activePage == 'regrades-teacher'} ? 'active' : ''">Quản lý phúc khảo sinh viên</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/student/student-subject}" sec:authorize="hasRole('student')" th:classappend="${activePage == 'student-sub'} ? 'active' : ''">Quản lý các môn học</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/student/score-subject}" sec:authorize="hasRole('student')" th:classappend="${activePage == 'score-sub'} ? 'active' : ''">Tra cứu điểm</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/student/regrades}" sec:authorize="hasRole('student')" th:classappend="${activePage == 'regrade-student'} ? 'active' : ''">Phúc khảo</a>
+    </div>
+
+</div>

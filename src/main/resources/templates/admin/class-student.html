@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head"></head>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div th:replace="admin/layout/navbar :: navbar"></div>
+        <div class="col-md-9 col-lg-9 main-content">
+            <div class="content-header">
+                <h2 th:text="${clazz.department.name + ' - ' + clazz.name}"></h2>
+            </div>
+
+            <div class="search-container">
+                <form method="get" th:action="@{/staff/class-student}">
+
+                    <input type="hidden" name="classId" th:value="${classId}">
+
+                    <input type="text"
+                           name="keyword"
+                           class="search-input"
+                           placeholder="Tìm theo mã SV hoặc tên sinh viên..."
+                           th:value="${keyword}">
+                    <button class="btn-search" type="submit">Tìm</button>
+                </form>
+                <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal">Thêm mới</a>
+            </div>
+
+            <div class="table-container">
+                <div th:if="${successMessage}" class="alert alert-success">
+                    <span th:text="${successMessage}"></span>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã sinh viên</th>
+                        <th>Thông tin sinh viên</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s,iterStat : ${studentList}">
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${s.id}"></td>
+                        <td>
+                            <strong>Họ và tên:</strong> <span th:text="${s.name}"></span><br>
+                            <strong>Email:</strong> <span th:text="${s.email}"></span><br>
+                            <strong>Ngày sinh:</strong><span th:text="${s.dateOfBirth != null} ? ${#temporals.format(s.dateOfBirth, 'dd/MM/yyyy')} : ''"></span><br>
+                            <strong>Địa chỉ:</strong> <span th:text="${s.address}"></span><br>
+                            <strong>Khoa - Lớp học phần:</strong><span th:text="${clazz.department.name}"></span> - <p th:text="${clazz.name}"></p>
+                        </td>
+                        <td th:if="${s.status}" style="color: red; font-weight: bold;">Nghỉ học</td>
+                        <td th:if="${!s.status}" style="color: green;  font-weight: bold;">Đang học</td>
+                        <td>
+                            <div class="action-icons">
+                                <div class="action-icons">
+                                    <a th:href="@{/staff/score-student(id=${s.id})}" class="text-success" ><i class="far fa-eye"></i></a>
+                                    <a href="#" th:data-id="${s.id}" th:data-class="${clazz.id}"onclick="confirmDelete(this)" class="text-danger"><i class="fa-solid fa-trash"></i></a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:if="${studentList.totalPages > 0}">
+                    <ul class="pagination pagination-sm no-margin pull-right">
+                        <!-- Prev -->
+                        <li class="page-item" th:classappend="${studentList.first} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/staff/class-student(classId=${classId}, page=${studentList.number - 1}, keyword=${keyword ?: ''})}">
+                                &laquo;
+                            </a>
+                        </li>
+
+                        <!-- Pages -->
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, studentList.totalPages - 1)}"
+                            th:classappend="${i == studentList.number} ? 'active'">
+                            <a class="page-link"
+                               th:text="${i + 1}"
+                               th:href="@{/staff/class-student(classId=${classId}, page=${i}, keyword=${keyword ?: ''})}"></a>
+                        </li>
+
+                        <!-- Next -->
+                        <li class="page-item" th:classappend="${studentList.last} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/staff/class-student(classId=${classId}, page=${studentList.number + 1}, keyword=${keyword ?: ''})}">
+                                &raquo;
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header text-white" style="background-color: #2e5da1;">
+                <h5 class="modal-title">Thêm sinh viên vào lớp học phần</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <form th:action="@{/staff/add-studentclass}" method="post">
+                <!-- Lớp học phần -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Lớp học phần:</label>
+                    <input type="text" class="form-control" value="Công nghệ thông tin - 28.2" disabled>
+                </div>
+                <div class="mb-3">
+                    <input type="text" id="studentSearch" class="form-control" placeholder="Tìm kiếm theo tên, mã SV, email...">
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="gap-2">
+                        <input type="checkbox" id="selectAll"> <label for="selectAll" class="small text-primary">Chọn tất cả</label>
+                        <span class="small">Đã chọn: <span id="selectedCount">0</span></span>
+                    </span>
+                    <span class="small">Tổng: <span th:text="${total}"></span></span>
+                </div>
+
+                    <input type="hidden" name="classId" th:value="${clazz.id}">
+                <table class="table table-bordered align-middle" id="studentTable">
+                    <thead class="table-light">
+                    <tr>
+                        <th style="width: 40px;"></th>
+                        <th>Mã sinh viên</th>
+                        <th>Thông tin sinh viên</th>
+                        <th style="width: 130px;">Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="st : ${students}">
+                        <td><input type="checkbox" name="studentIds" th:value="${st.id}"></td>
+                        <td th:text="${st.id}"></td>
+                        <td>
+                            <strong>Họ và tên:</strong> <span th:text="${st.name}"></span><br>
+                            <strong>Email:</strong> <span th:text="${st.email}"></span><br>
+                            <strong>Ngày sinh:</strong><span th:text="${st.dateOfBirth != null} ? ${#temporals.format(st.dateOfBirth, 'dd/MM/yyyy')} : ''"></span><br>
+                            <strong>Địa chỉ:</strong> <span th:text="${st.address}"></span><br>
+                        </td>
+                        <td class="text-success fw-bold">Chưa có lớp</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex mt-3 gap-2 float-end">
+                    <a type="button" class="btn btn-secondary " data-bs-dismiss="modal">Hủy</a>
+                    <button type="submit" class="btn-add">Thêm sinh viên</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap Bundle JS (đã bao gồm Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmDelete(element) {
+    const studentId = element.dataset.id;
+    const classId = element.dataset.class;
+    if (confirm("Bạn có chắc chắn muốn xóa sinh viên " + studentId + " này khỏi lớp không?")) {
+        window.location.href = "/qlsv/staff/delete-student-class?classId="+classId+"&studentId="+studentId;
+    }
+}
+
+let students = [];
+
+
+async function loadStudents(keyword="") {
+  try {
+    const res = await fetch(`/qlsv/staff/students/not-in-class?key=${encodeURIComponent(keyword)}`);
+    students = await res.json();
+    const totalElem = document.getElementById("totalStudents");
+    if (totalElem) totalElem.textContent = students.length;
+
+    const tbody = document.querySelector("#studentTable tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    students.forEach(s => {
+      tbody.innerHTML += `
+        <tr>
+          <td><input type="checkbox" name="studentIds" class="student-checkbox" value="${s.id}"></td>
+          <td>${s.id}</td>
+          <td>
+            <strong>Họ và tên:</strong> ${s.name}<br>
+            <strong>Email:</strong> ${s.email}<br>
+            <strong>Ngày sinh:</strong> ${s.dateOfBirth ? new Date(s.dateOfBirth).toLocaleDateString() : ''}<br>
+            <strong>Địa chỉ:</strong> ${s.address || ''}<br>
+          </td>
+          <td class="text-success fw-bold">Chưa có lớp</td>
+        </tr>`;
+    });
+    attachCheckboxEvents();
+    updateSelectedCount();
+  } catch (err) {
+    console.error("Lỗi load sinh viên:", err);
+  }
+}
+function updateSelectedCount() {
+  const count = document.querySelectorAll(".student-checkbox:checked").length;
+  const selectedElem = document.getElementById("selectedCount");
+  if (selectedElem) selectedElem.textContent = count;
+  const selectAll = document.getElementById("selectAll");
+  if (selectAll) selectAll.checked = count === students.length && students.length > 0;
+}
+function attachCheckboxEvents() {
+  document.querySelectorAll(".student-checkbox").forEach(cb => {
+    cb.onchange = updateSelectedCount;
+  });
+}
+document.getElementById("selectAll")?.addEventListener("change", () => {
+  const checked = document.getElementById("selectAll").checked;
+  document.querySelectorAll(".student-checkbox").forEach(cb => cb.checked = checked);
+  updateSelectedCount();
+});
+document.getElementById("studentSearch")?.addEventListener("input", e => {
+  loadStudents(e.target.value);
+});
+document.getElementById("addSelectedStudents")?.addEventListener("click", () => {
+  const selectedIds = Array.from(document.querySelectorAll(".student-checkbox:checked"))
+    .map(cb => cb.dataset.id);
+  console.log("Đã chọn sinh viên:", selectedIds);
+});
+document.addEventListener("DOMContentLoaded", () => {
+  loadStudents();
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head"></head>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div th:replace="admin/layout/navbar :: navbar"></div>
+        <div class="col-md-9 col-lg-9 main-content">
+            <div class="content-header">
+                <h2 th:text="${clazz.department.name + ' - ' + clazz.name}"></h2>
+            </div>
+
+            <div class="search-container">
+                <form method="get"
+                      action="">
+                    <input type="text" name="keyword" class="search-input"
+                           placeholder="Tìm kiếm theo tên..." value="${keyword}">
+                    <button class="btn-search" type="submit">Tìm</button>
+                </form>
+                <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStudentModal">Thêm
+                    mới</a>
+            </div>
+
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã sinh viên</th>
+                        <th>Thông tin sinh viên</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s,iterStat : ${studentList}">
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${s.id}"></td>
+                        <td>
+                            <strong>Họ và tên:</strong> <span th:text="${s.name}"></span><br>
+                            <strong>Email:</strong> <span th:text="${s.email}"></span><br>
+                            <strong>Ngày sinh:</strong><span
+                                th:text="${s.dateOfBirth != null} ? ${#temporals.format(s.dateOfBirth, 'dd/MM/yyyy')} : ''"></span><br>
+                            <strong>Địa chỉ:</strong> <span th:text="${s.address}"></span><br>
+                            <strong>Khoa - Lớp học phần:</strong><span th:text="${clazz.department.name}"></span> - <p
+                                th:text="${clazz.name}"></p>
+                        </td>
+                        <td th:if="${s.status}" style="color: red; font-weight: bold;">Nghỉ học</td>
+                        <td th:if="${!s.status}" style="color: green;  font-weight: bold;">Đang học</td>
+                        <td>
+                            <div class="action-icons">
+                                <div class="action-icons">
+                                    <a class="text-success"
+                                       th:href="@{/teacher/student-class(classId=${clazz.id}, studentId=${s.id})}"><i
+                                            class="far fa-eye"></i></a>
+                                    <a href="#" th:data-id="${s.id}" onclick="confirmDelete(this)"
+                                       class="text-danger"><i class="fa-solid fa-trash"></i></a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="scoreModal" tabindex="-1" th:if="${student != null}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #2e5da1;">
+                <h5 class="modal-title">Điểm sinh viên</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <h5 th:if="${student != null}" th:text="'Sinh viên: ' + ${student.name}" class="fw-bold mb-3"></h5>
+                <table class="table">
+                    <div th:if="${successMess}" class="alert alert-success">
+                        <span th:text="${successMess}"></span>
+                    </div>
+                    <thead>
+                    <tr>
+                        <th>Môn học</th>
+                        <th>Quá trình</th>
+                        <th>Cuối kỳ</th>
+                        <th>Trung bình</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody th:if="${scores != null}">
+                    <tr th:each="sc : ${scores}">
+                        <td th:text="${sc.subjectName}"></td>
+                        <td th:text="${sc.scoreProcess != 0.0 ? sc.scoreProcess : 'Chưa nhập điểm'}"></td>
+                        <td th:text="${sc.scoreFinal != 0.0 ? sc.scoreFinal : 'Chưa nhập điểm'}"></td>
+                        <td th:text="${sc.totalScore != 0.0 ? sc.totalScore : 'Chưa nhập'}"></td>
+                        <td th:with="start=${sc.subjectStartDate == null ? null : T(java.time.LocalDate).parse(sc.subjectStartDate,
+                                    T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))}, end=${sc.subjectEndDate == null ? null :
+                                    T(java.time.LocalDate).parse(sc.subjectEndDate, T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd'))},
+                                    nowDate=${T(java.time.LocalDate).now()}">
+                            <span th:if="${start == null or end == null}">
+                                Thông tin thời gian sửa điểm chưa được thiết lập.
+                            </span>
+                            <span th:if="${start != null and nowDate.isBefore(start)}">
+                                Chưa đến thời gian sửa điểm
+                            </span>
+                            <span th:if="${end != null and nowDate.isAfter(end)}">
+                                Đã hết thời gian sửa điểm
+                            </span>
+                            <span th:if="${start != null and end != null and (nowDate.isAfter(start) or nowDate.isEqual(start)) and (nowDate.isBefore(end) or nowDate.isEqual(end))}">
+                                <a data-bs-toggle="modal" data-bs-target="#scoreAddModal"></a>
+                                <a th:if="${sc.scoreProcess == null or sc.scoreProcess == 0}" href="#" class="text-success add-score-btn"
+                                   th:data-id="${student.id}" th:data-class="${clazz.id}" th:data-subject="${sc.subjectId}" th:title="'Hạn cuối thêm điểm: ' + ${#temporals.format(end, 'dd/MM/yyyy')}">
+                                    <i class="fa-solid fa-plus"></i>
+                                </a>
+                                <a data-bs-toggle="modal" data-bs-target="#scoreUpdateModal"></a>
+                                <a th:if="${sc.scoreProcess != null and sc.scoreProcess != 0}" class="text-info update-score-btn" href="#"
+                                   th:title="'Hạn cuối sửa điểm: ' + ${#temporals.format(end, 'dd/MM/yyyy')}" th:data-class="${clazz.id}"
+                                   th:data-score="${sc.scoreSubjectId}" th:data-process="${sc.scoreProcess}" th:data-exam="${sc.scoreFinal}">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+                            </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="scoreAddModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:500px;z-index: 1055;">
+        <div class="modal-content" style="border-radius:12px; overflow:hidden;">
+
+            <!-- Header -->
+            <div class="modal-header" style="background:#D8E7FF; border-bottom:1px solid #2E5DA1; height:100px;">
+                <div>
+                    <h5 class="modal-title fw-bold" style="font-size:20px;">Thêm điểm sinh viên</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/teacher/add-score-subject}" method="post">
+                <!-- Body -->
+                <div class="modal-body d-flex gap-3 pt-3">
+
+                    <!-- Ngày bắt đầu -->
+                    <div class="flex-fill">
+                        <label class="form-label fw-semibold">Điểm quá trình</label>
+                        <div class="input-group">
+                            <input type="hidden" name="student.id" id="student-id">
+                            <input type="hidden" name="subject.id" id="subject-id">
+                            <input type="hidden" name="classId" id="class-id">
+                            <input type="number" min="0" max="10" name="scoreProcess" class="form-control" required>
+                            <span class="input-group-text bg-transparent border-0"></span>
+                        </div>
+                    </div>
+
+                    <!-- Ngày kết thúc -->
+                    <div class="flex-fill">
+                        <label class="form-label fw-semibold">Điểm thi cuối môn</label>
+                        <div class="input-group">
+                            <input type="number" min="0" max="10" name="scoreFinal" class="form-control" required>
+                            <span class="input-group-text bg-transparent border-0"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="scoreUpdateModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:500px;z-index: 1055;">
+        <div class="modal-content" style="border-radius:12px; overflow:hidden;">
+
+            <!-- Header -->
+            <div class="modal-header" style="background:#D8E7FF; border-bottom:1px solid #2E5DA1; height:100px;">
+                <div>
+                    <h5 class="modal-title fw-bold" style="font-size:20px;">Cập nhật điểm sinh viên</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/teacher/update-score-subject}" method="post">
+                <!-- Body -->
+                <div class="modal-body d-flex gap-3 pt-3">
+
+                    <!-- Ngày bắt đầu -->
+                    <div class="flex-fill">
+                        <label class="form-label fw-semibold">Điểm quá trình</label>
+                        <div class="input-group">
+                            <input type="hidden" name="classId" id="class">
+                            <input type="hidden" name="id" id="score">
+                            <input type="number" min="0" max="10" id="pro" name="scoreProcess" class="form-control" required>
+                            <span class="input-group-text bg-transparent border-0"></span>
+                        </div>
+                    </div>
+
+                    <!-- Ngày kết thúc -->
+                    <div class="flex-fill">
+                        <label class="form-label fw-semibold">Điểm thi cuối môn</label>
+                        <div class="input-group">
+                            <input type="number" min="0" max="10" id="exam" name="scoreFinal" class="form-control" required>
+                            <span class="input-group-text bg-transparent border-0"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap Bundle JS (đã bao gồm Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.querySelectorAll(".add-score-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+        document.getElementById("student-id").value = this.dataset.id;
+        document.getElementById("subject-id").value = this.dataset.subject;
+        document.getElementById("class-id").value = this.dataset.class;
+        new bootstrap.Modal(document.getElementById('scoreAddModal')).show();
+    });
+});
+    document.querySelectorAll(".update-score-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+        document.getElementById("class").value = this.dataset.class;
+        document.getElementById("score").value = this.dataset.score;
+        document.getElementById("exam").value = this.dataset.exam;
+        document.getElementById("pro").value = this.dataset.process;
+        new bootstrap.Modal(document.getElementById('scoreUpdateModal')).show();
+    });
+});
+</script>
+<script th:if="${showModal}">
+    const modal = new bootstrap.Modal(document.getElementById('scoreModal'));
+    modal.show();
+</script>
+
+
+</body>
+</html>

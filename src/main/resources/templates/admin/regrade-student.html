@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head"></head>
+<style>
+    .form-container {
+        max-width: 1224px;
+        background: #FFF;
+        border-radius: 12px;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.10), 0 1px 3px 0 rgba(0, 0, 0, 0.10);
+    }
+
+    .form-header {
+        padding: 25px;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .form-title {
+        color: #111827;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 28px;
+        margin-bottom: 4px;
+    }
+
+    .form-subtitle {
+        color: #6B7280;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+    }
+
+    .required {
+        color: #DC3545;
+    }
+
+    .form-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 25px;
+    }
+
+    .form-sections,
+    .form-sections-right {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .form-section {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .section-title {
+        color: #111827;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
+        padding-bottom: 9px;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-label {
+        color: #374151;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+    }
+
+    .form-input {
+        width: 100%;
+        height: 42px;
+        padding: 0 12px;
+        border-radius: 8px;
+        border: 1px solid #D1D5DB;
+        font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        color: #212529;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+        border-color: #4169B4;
+    }
+
+    .form-input::placeholder {
+        color: #6B7280;
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    .dropdown-arrow {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%) rotate(180deg);
+        pointer-events: none;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .form-textarea {
+        width: 100%;
+        min-height: 78px;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #D1D5DB;
+        font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        color: #212529;
+        outline: none;
+        resize: vertical;
+        transition: border-color 0.2s;
+    }
+
+    .form-textarea:focus {
+        border-color: #4169B4;
+    }
+
+    .form-textarea::placeholder {
+        color: #6B7280;
+        font-style: italic;
+    }
+
+    .character-count {
+        align-self: flex-end;
+        color: #6B7280;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 16px;
+    }
+
+    .payment-info {
+        border: 2px solid #D1D5DB;
+        border-radius: 8px;
+        padding: 17px;
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        min-height: 265px;
+    }
+
+    .qr-code {
+        width: 125px;
+        height: 125px;
+        flex-shrink: 0;
+    }
+
+    .payment-details {
+        color: #374151;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 20px;
+        white-space: pre-line;
+    }
+
+    .payment-details p {
+        margin: 0;
+    }
+
+    .file-upload {
+        border: 2px solid #D1D5DB;
+        border-radius: 8px;
+        min-height: 121px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: border-color 0.2s;
+    }
+
+    .file-upload:hover {
+        border-color: #4169B4;
+    }
+
+    .file-upload svg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .upload-text {
+        color: #374151;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        text-align: center;
+    }
+
+    .upload-hint {
+        color: #6B7280;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 16px;
+        text-align: center;
+    }
+
+    .notice-box {
+        background: #F9FAFB;
+        border-radius: 8px;
+        padding: 18px 16px;
+    }
+
+    .notice-title {
+        color: #6B7280;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        margin-bottom: 3px;
+    }
+
+    .notice-text {
+        color: #6B7280;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+    }
+
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 27px;
+        padding: 25px;
+        border-top: 1px solid #E5E7EB;
+    }
+
+    .btn {
+        height: 42px;
+        padding: 9px 24px;
+        border-radius: 8px;
+        font-family: 'Inter', -apple-system, Roboto, Helvetica, sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 24px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+    }
+
+    .btn-cancel {
+        background: #FFF;
+        color: #374151;
+        border: 1px solid #D1D5DB;
+        min-width: 80px;
+    }
+
+    .btn-cancel:hover {
+        background: #F9FAFB;
+    }
+
+    .btn-draft {
+        background: #FFF;
+        color: #D97706;
+        border: 1px solid #D97706;
+        min-width: 112px;
+    }
+
+    .btn-draft:hover {
+        background: #FEF3C7;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #4169B4 0%, #5B7FB8 100%);
+        color: #FFF;
+        min-width: 191px;
+    }
+
+    .btn-submit:hover {
+        box-shadow: 0 4px 6px rgba(65, 105, 180, 0.3);
+        transform: translateY(-1px);
+    }
+
+</style>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div th:replace="admin/layout/navbar :: navbar"></div>
+
+        <div class="col-md-9 col-lg-9">
+            <form th:action="@{/student/add-regrade}" method="post" enctype="multipart/form-data">
+            <main style="margin-top: 10px;">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2 class="form-title">Tạo đơn phúc khảo mới</h2>
+                        <p class="form-subtitle">
+                            Điền đầy đủ thông tin để gửi đơn phúc khảo,<span class="required">*</span> là trường bắt buộc nhập
+                        </p>
+                    </div>
+
+                    <div class="form-content">
+                        <div class="form-sections">
+                            <section class="form-section">
+                                <h3 class="section-title">📋 1. Thông tin định danh sinh viên</h3>
+
+                                <div class="form-group">
+                                    <label class="form-label">Họ và tên <span class="required">*</span></label>
+                                    <input type="text" class="form-input" th:value="${profile.name}" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Mã số sinh viên (MSSV) <span class="required">*</span></label>
+                                    <input type="text" name="student.id" class="form-input" th:value="${profile.id}" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Lớp<span class="required">*</span></label>
+                                    <input type="text" class="form-input" th:value="${clazz.name}" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Khoa<span class="required">*</span></label>
+                                    <input type="text" class="form-input" th:value="${clazz.department.name}" readonly>
+                                </div>
+                            </section>
+
+                            <section class="form-section">
+                                <h3 class="section-title">📘 2. Thông tin môn học được phúc khảo</h3>
+
+                                <div class="form-group">
+                                    <input type="hidden" name="subject.id" class="form-input" th:value="${sco.subject.id}" readonly>
+                                        <input type="hidden" name="id" class="form-input" th:if="${req != null}" th:value="${req.id}" readonly>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tên học phần <span class="required">*</span></label>
+                                    <div class="select-wrapper">
+                                        <input type="text" class="form-input" th:value="${sco.subject.name}" readonly>
+                                        <svg class="dropdown-arrow" width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8.66028 0L17.3205 10.5H2.38419e-05L8.66028 0Z" fill="#6B7280"/>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Số tín chỉ <span class="required">*</span></label>
+                                        <input type="text" class="form-input" th:value="${sco.subject.credit}" readonly>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">Lần thi <span class="required">*</span></label>
+                                        <input type="text" class="form-input" th:value="${sco.examAttempt}" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Học kỳ / Năm học <span class="required">*</span></label>
+                                    <input type="text" class="form-input" th:value="${sco.subject.cycle.name}" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Điểm hiện tại <span class="required">*</span></label>
+                                    <input type="text" name="oldScore" class="form-input" th:value="${sco.totalScore}" readonly>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="form-sections-right">
+                            <section class="form-section">
+                                <h3 class="section-title">🗒️ 3. Thông tin nội dung phúc khảo</h3>
+
+                                <div class="form-group">
+                                    <label class="form-label">Lý do phúc khảo <span class="required">*</span></label>
+                                    <textarea class="form-textarea" name="requestReason" placeholder="Nhập lý do phúc khảo tại đây..."></textarea>
+                                    <span class="character-count">0/1000</span>
+                                </div>
+                            </section>
+
+                            <section class="form-section">
+                                <h3 class="section-title">🗒️ 4. Thông tin chuyển khoản phúc khảo</h3>
+
+                                <div class="form-group">
+                                    <label class="form-label">Thông tin chuyển khoản</label>
+                                    <div class="payment-info">
+                                        <svg class="qr-code" width="125" height="125" viewBox="0 0 125 125" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g clip-path="url(#clip0_166_2031)">
+                                                <path d="M14.2667 20.8999H30.04V35.7758H14.2667V20.8999Z" fill="black"/>
+                                                <path d="M45.8138 6.02393V50.6515H-1.50598V6.02393H45.8138ZM37.9272 13.4619H6.38065V43.2135H37.9272V13.4619ZM30.0406 95.279H14.2673V110.155H30.0406V95.279Z" fill="black"/>
+                                                <path d="M45.8138 80.4033V125.031H-1.50598V80.4033H45.8138ZM6.38065 87.8412V117.593H37.9272V87.8412H6.38065ZM93.1336 20.8999H108.907V35.7758H93.1336V20.8999Z" fill="black"/>
+                                                <path d="M77.3604 6.02393V50.6515H124.68V6.02393H77.3604ZM116.794 13.4619V43.2135H85.247V13.4619H116.794ZM61.5871 13.4619V6.02393H69.4737V20.8998H61.5871V35.7756H53.7005V13.4619H61.5871ZM61.5871 50.6515V35.7756H69.4737V50.6515H61.5871ZM45.8138 65.5273V58.0894H53.7005V50.6515H61.5871V65.5273H69.4737V58.0894H108.907V65.5273H77.3604V72.9652H53.7005V65.5273H45.8138ZM45.8138 65.5273V72.9652H14.2673V65.5273H6.38065V72.9652H-1.50598V58.0894H22.1539V65.5273H45.8138ZM124.68 72.9652H116.794V58.0894H124.68V72.9652ZM116.794 72.9652H108.907V87.8411H124.68V80.4032H116.794V72.9652ZM85.247 72.9652H101.02V80.4032H93.1336V87.8411H85.247V72.9652ZM101.02 95.279V87.8411H93.1336V95.279H85.247V102.717H69.4737V110.155H93.1336V95.279H101.02ZM101.02 95.279H124.68V102.717H108.907V110.155H101.02V95.279ZM69.4737 87.8411V95.279H77.3604V80.4032H53.7005V87.8411H69.4737Z" fill="black"/>
+                                                <path d="M53.7002 95.2793H61.5868V117.593H93.1334V125.031H53.7002V95.2793ZM124.68 110.155V125.031H101.02V117.593H116.793V110.155H124.68Z" fill="black"/>
+                                            </g>
+                                            <defs>
+                                                <clipPath id="clip0_166_2031">
+                                                    <rect width="125" height="125" fill="white"/>
+                                                </clipPath>
+                                            </defs>
+                                        </svg>
+                                        <div class="payment-details">
+                                            <p>Ngân hàng: Vietcombank</p>
+                                            <p>Số TK: 1234567890</p>
+                                            <p>Chủ TK: PHONG DAO TAO</p>
+                                            <p>Số tiền: 50.000 ₫</p>
+                                            <p>Nội dung:<br>Đơn xin phúc khảo: MSSV + Mã học phần</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Minh chứng đính kèm</label>
+                                    <div class="file-upload">
+                                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M28 8H12C10.9391 8 9.92172 8.42143 9.17157 9.17157C8.42143 9.92172 8 10.9391 8 12V32M8 32V36C8 37.0609 8.42143 38.0783 9.17157 38.8284C9.92172 39.5786 10.9391 40 12 40H36C37.0609 40 38.0783 39.5786 38.8284 38.8284C39.5786 38.0783 40 37.0609 40 36V28M8 32L17.172 22.828C17.9221 22.0781 18.9393 21.6569 20 21.6569C21.0607 21.6569 22.0779 22.0781 22.828 22.828L28 28M40 20V28M40 28L36.828 24.828C36.0779 24.0781 35.0607 23.6569 34 23.6569C32.9393 23.6569 31.9221 24.0781 31.172 24.828L28 28M28 28L32 32M36 8H44M40 4V12M28 16H28.02" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <p class="upload-text">Tải lên ảnh biên lai chuyển khoản</p>
+                                        <p class="upload-hint">PNG, JPG</p>
+                                        <input type="file" name="payment">
+                                    </div>
+                                </div>
+
+                                <div class="notice-box">
+                                    <p class="notice-title">📌 Lưu ý quan trọng:</p>
+                                    <p class="notice-text">✓ Vui lòng chuyển khoản đúng số tiền và nội dung để đơn được xử lý nhanh chóng<br>
+                                        ✓ Nội dung chuyển khoản: Vui lòng ghi đúng nội dung chuyển khoản<br>
+                                        ✓ Sau khi chuyển khoản thành công, vui lòng gửi lại biên lai</p>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+
+                    <div class="form-footer">
+                        <a th:href="@{/student/regrades}" class="btn btn-cancel">Hủy</a>
+                        <input th:if="${req == null or req.status != 'Chờ xét duyệt'}" type="submit" name="status" value="Lưu nháp" class="btn btn-draft">
+                        <input th:if="${req == null or req.status != 'Chờ xét duyệt'}" type="submit" name="status" value="Gửi đơn phúc khảo" class="btn btn-submit">
+                    </div>
+                </div>
+            </main>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head">
+    <style>
+        .disabled {
+        opacity: 0.5;
+        pointer-events: none !important;
+        cursor: not-allowed;
+    }
+
+
+    </style>
+</head>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div th:replace="admin/layout/navbar :: navbar"></div>
+        <div class="col-md-9 col-lg-9 main-content">
+            <div class="content-header d-flex">
+                <h2>Danh sách đơn phúc khảo</h2>
+                <div class="search-container" style="margin-left: 24rem;">
+                    <a href="#" id="btnReject" class="btn btn-danger disabled">Từ chối</a>
+                    <a href="#" id="btnApprove" class="btn btn-add disabled">Phê duyệt</a>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <div class="container mt-3">
+                    <form method="get" th:action="@{/staff/regrades-staff}">
+                        <div class="row g-3 align-items-end">
+
+                            <!-- Sinh viên -->
+                            <div class="col-md-4">
+                                <label class="form-label">Sinh viên</label>
+                                <input type="text" onchange="this.form.submit()" class="form-control" name="studentCode" th:value="${studentCode}" placeholder="Nhập tên hoặc mã sinh viên">
+                            </div>
+
+                            <!-- Môn học -->
+                            <div class="col-md-4">
+                                <label class="form-label">Môn học</label>
+                                <input type="text" onchange="this.form.submit()" class="form-control" placeholder="Nhập tên môn học để tìm nhanh" name="subjectName" th:value="${subjectName}">
+                            </div>
+
+                            <!-- Thời gian -->
+                            <div class="col-md-4">
+                                <label class="form-label">Thời gian</label>
+                                <div class="input-group">
+                                    <input type="date" onchange="this.form.submit()" class="form-control" placeholder="Chọn thời gian" name="createdDate" th:value="${createdDate}">
+                                    <span class="input-group-text">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                            <path d="M2 9C2 7.114 2 6.172 2.586 5.586C3.172 5 4.114 5 6 5H18C19.886 5 20.828 5 21.414 5.586C22 6.172 22 7.114 22 9C22 9.471 22 9.707 21.854 9.854C21.707 10 21.47 10 21 10H3C2.529 10 2.293 10 2.146 9.854C2 9.707 2 9.47 2 9ZM2 18C2 19.886 2 20.828 2.586 21.414C3.172 22 4.114 22 6 22H18C19.886 22 20.828 22 21.414 21.414C22 20.828 22 19.886 22 18V13C22 12.529 22 12.293 21.854 12.146C21.707 12 21.47 12 21 12H3C2.529 12 2.293 12 2.146 12.146C2 12.293 2 12.53 2 13V18Z" fill="#757575"/>
+                                            <path d="M7 3V6M17 3V6" stroke="#757575" stroke-width="2" stroke-linecap="round"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="table-container">
+                <div th:if="${successMessage}" class="alert alert-success">
+                    <span th:text="${successMessage}"></span>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th><input type="checkbox" class="checkbox" id="checkAll"></th>
+                        <th>STT</th>
+                        <th>Môn học</th>
+                        <th>Thông tin sinh viên</th>
+                        <th>Thời gian</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="r,iterStat : ${re}" >
+                        <td><input th:if="${r.status == 'Chờ xét duyệt' }"  type="checkbox" th:value="${r.id}" name="id" class="checkbox checkbox-item"></td>
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${r.subject.name}"></td>
+                        <td >
+                            <strong>Họ và tên:</strong> <span th:text="${r.student.name}"></span><br>
+                            <strong>Email:</strong> <span th:text="${r.student.email}"></span><br>
+                            <strong>Ngày sinh:</strong><span th:text="${r.student.dateOfBirth != null} ? ${#temporals.format(r.student.dateOfBirth, 'dd/MM/yyyy')} : ''"></span><br>
+                            <strong>Khoa-Lớp học phần</strong><span th:each="cl : ${r.student.classes} " th:text="${cl.department.name + ' - ' + cl.name}"></span><br>
+                        </td>
+                        <td th:text="${r.createdAt != null} ? ${#temporals.format(r.createdAt, 'dd/MM/yyyy')} : ''"></td>
+                        <td th:switch="${r.status}">
+                            <span th:case="'Chờ xét duyệt'" class="text-secondary fw-bold">Chờ xét duyệt</span>
+                            <span th:case="'Đã duyệt hồ sơ'" class="text-warning fw-bold">Đã duyệt hồ sơ</span>
+                            <span th:case="*">Không xác định</span>
+                        </td>
+                        <td>
+                            <div class="action-icons">
+                                <div class="action-icons">
+                                    <span th:if="${r.status == 'Chờ xét duyệt' }">
+                                        <a th:data-id="${r.id}" class="text-success" onclick="confirmAgree(this)"><i class="fa-regular fa-circle-check"></i></a>
+                                        <a data-bs-toggle="modal"  data-bs-target="#rejectModal" class="text-danger" ></a>
+                                        <a th:data-id="${r.id}" class="upRegrade text-danger"><i class="fa-solid fa-xmark"></i></a>
+                                    </span>
+                                    <a class="text-success" th:href="@{/staff/info-regrade(id=${r.id})}" ><i class="far fa-eye"></i></a>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="pagination">
+                <ul class="pagination pagination-sm no-margin pull-right">
+
+                    <!-- Nút Prev -->
+                    <li class="page-item" th:classappend="${re.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/staff/regrades-staff(page=${re.number - 1}, studentCode=${studentCode}, subjectName=${subjectName}, createdDate=${createdDate})}">
+                            &laquo;
+                        </a>
+                    </li>
+
+                    <!-- Các trang -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, re.totalPages - 1)}"
+                        th:classappend="${i == re.number} ? 'active'">
+                        <a class="page-link"
+                           th:text="${i + 1}"
+                           th:href="@{/staff/regrades-staff(page=${i}, studentCode=${studentCode}, subjectName=${subjectName}, createdDate=${createdDate})}">
+                        </a>
+                    </li>
+
+                    <!-- Nút Next -->
+                    <li class="page-item" th:classappend="${re.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/staff/regrades-staff(page=${re.number + 1}, studentCode=${studentCode}, subjectName=${subjectName}, createdDate=${createdDate})}">
+                            &raquo;
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content custom-modal">
+
+            <div class="modal-header custom-header">
+                <button type="button" class="btn-close custom-close" data-bs-dismiss="modal"></button>
+                <div>
+                    <h1 class="modal-title">Từ chối đơn xin phúc khảo</h1>
+                    <p class="modal-subtitle">Chọn lý do từ chối đơn xin phúc khảo của sinh viên</p>
+                </div>
+            </div>
+            <form th:action="@{/staff/refuse}" method="post">
+            <div class="modal-body">
+
+                <div class="warning-box">
+                    <svg class="warning-icon" width="19" height="17" viewBox="0 0 19 17" fill="none">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                              d="M7.00783 1.224C7.92583 -0.408 10.2742 -0.408 11.191 1.224L17.887 13.128C18.787 14.7288 17.6314 16.704 15.7966 16.704H2.40343C0.567428 16.704 -0.588173 14.7288 0.311827 13.128L7.00783 1.224ZM10.2994 13.1052C10.2994 13.4235 10.173 13.7287 9.94796 13.9537C9.72291 14.1788 9.41769 14.3052 9.09943 14.3052C8.78117 14.3052 8.47594 14.1788 8.2509 13.9537C8.02586 13.7287 7.89943 13.4235 7.89943 13.1052C7.89943 12.7869 8.02586 12.4817 8.2509 12.2567C8.47594 12.0316 8.78117 11.9052 9.09943 11.9052C9.41769 11.9052 9.72291 12.0316 9.94796 12.2567C10.173 12.4817 10.2994 12.7869 10.2994 13.1052ZM9.09943 3.5052C8.78117 3.5052 8.47594 3.63163 8.2509 3.85667C8.02586 4.08172 7.89943 4.38694 7.89943 4.7052V8.3052C7.89943 8.62346 8.02586 8.92868 8.2509 9.15373C8.47594 9.37877 8.78117 9.5052 9.09943 9.5052C9.41769 9.5052 9.72291 9.37877 9.94796 9.15373C10.173 8.92868 10.2994 8.62346 10.2994 8.3052V4.7052C10.2994 4.38694 10.173 4.08172 9.94796 3.85667C9.72291 3.63163 9.41769 3.5052 9.09943 3.5052Z"
+                              fill="#DC3545"/>
+                    </svg>
+
+                    <div>
+                        <h2 class="warning-title">Lưu ý quan trọng</h2>
+                        <p class="warning-text">
+                            Việc từ chối đơn xin phúc khảo sẽ được ghi nhận vào hệ thống và thông báo tự động đến sinh viên qua email.
+                            Vui lòng chọn lý do phù hợp và chính xác.
+                        </p>
+                    </div>
+                </div>
+
+                <h3 class="section-title mt-3">Lý do từ chối:</h3>
+
+                    <div class="radio-options">
+                        <label class="radio-option">
+                            <input type="hidden" id="edit-id" name="id" class="radio-input">
+                            <input type="radio" name="trainingNote" class="radio-input" value="Không nộp lệ phí phúc khảo">
+                            <span>Không nộp lệ phí phúc khảo</span>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="trainingNote" class="radio-input" value="Bài thi không được lưu trữ hoặc không đủ điều kiện để phúc khảo">
+                            <span>Bài thi không được lưu trữ hoặc không đủ điều kiện để phúc khảo</span>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="trainingNote" class="radio-input" value="Kết quả đã được chấm lại và không có sai sót nào">
+                            <span>Kết quả đã được chấm lại và không có sai sót nào</span>
+                        </label>
+
+                        <label class="radio-option">
+                            <input type="radio" name="trainingNote" class="radio-input" value="Sinh viên không có mặt khi được yêu cầu đối chiếu bài thi">
+                            <span>Sinh viên không có mặt khi được yêu cầu đối chiếu bài thi</span>
+                        </label>
+
+                        <label class="radio-option d-block">
+                            <input type="radio" name="" class="radio-input reason-other" value="other" required>
+                            <span>Khác (vui lòng mô tả chi tiết)</span>
+                        </label>
+                    </div>
+                    <textarea id="other-reason-text" name="trainingNote" class="reason-textarea form-control mt-2" placeholder="Nhập lý do từ chối tại đây..." disabled></textarea>
+
+
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Bundle JS (đã bao gồm Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.querySelectorAll(".upRegrade").forEach(btn => {
+    btn.addEventListener("click", function () {
+        document.getElementById("edit-id").value = this.dataset.id;
+        new bootstrap.Modal(document.getElementById('rejectModal')).show();
+    });
+});
+    function confirmAgree(element) {
+    const khoaId = element.dataset.id;
+    if (confirm("Bạn có chắc chắn muốn phê duyệt hay không")) {
+        window.location.href = "/qlsv/staff/agree?ids=" + khoaId;
+    }
+}
+
+    const checkAll = document.getElementById("checkAll");
+    const items = document.querySelectorAll(".checkbox-item");
+    const btnReject = document.getElementById("btnReject");
+    const btnApprove = document.getElementById("btnApprove");
+
+    function updateButtons() {
+        const anyChecked = Array.from(items).some(cb => cb.checked);
+
+        if (anyChecked) {
+            btnReject.classList.remove("disabled");
+            btnReject.removeAttribute("disabled");
+
+            btnApprove.classList.remove("disabled");
+            btnApprove.removeAttribute("disabled");
+        } else {
+            btnReject.classList.add("disabled");
+            btnReject.setAttribute("disabled", "true");
+
+            btnApprove.classList.add("disabled");
+            btnApprove.setAttribute("disabled", "true");
+        }
+    }
+
+    // Check/uncheck all
+    checkAll.addEventListener("change", () => {
+        items.forEach(cb => cb.checked = checkAll.checked);
+        updateButtons();
+    });
+
+    // Check từng cái
+    items.forEach(cb => {
+        cb.addEventListener("change", () => {
+            if (!cb.checked) checkAll.checked = false;
+            updateButtons();
+        });
+    });
+
+    updateButtons();
+
+
+    const otherRadio = document.querySelector('.reason-other');
+    const textArea  = document.getElementById('other-reason-text');
+    const radios    = document.querySelectorAll('input[name="reason"]');
+
+    radios.forEach(r => r.addEventListener('change', () => {
+        if (otherRadio.checked) {
+            textArea.disabled = false;
+            textArea.required = true;
+        } else {
+            textArea.disabled = true;
+            textArea.required = false;
+            textArea.value = "";
+        }
+    }));
+
+    btnApprove.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (btnReject.classList.contains("disabled")) return;
+
+        const ids = [...document.querySelectorAll(".checkbox-item:checked")]
+                .map(cb => cb.value)
+                .join(",");
+        if (confirm("Bạn có chắc chắn muốn phê duyệt hay không")) {
+          window.location.href = "/qlsv/staff/agree?ids=" + ids;
+        }
+
+    });
+
+
+</script>
+
+</body>
+</html>

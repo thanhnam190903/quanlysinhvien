@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head"></head>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        <div th:replace="admin/layout/navbar :: navbar"></div>
+        <div class="col-md-9 col-lg-9 main-content">
+            <div class="content-header">
+                <h2>Danh sách đơn phúc khảo</h2>
+            </div>
+
+            <div class="search-container">
+                <form method="get"
+                      action="">
+                    <input type="text" name="keyword" class="search-input"
+                           placeholder="Tìm kiếm theo tên..." value="${keyword}">
+                    <button class="btn-search" type="submit">Tìm</button>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <div th:if="${successMessage}" class="alert alert-success">
+                    <span th:text="${successMessage}"></span>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Môn học</th>
+                        <th>Điểm hiện tại</th>
+                        <th>Thời gian</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="r,iterStat : ${re}">
+                        <td th:text="${iterStat.index + 1}"></td>
+                        <td th:text="${r.subject.name}"></td>
+                        <td th:text="${r.newScore}"></td>
+                        <td th:text="${r.createdAt != null} ? ${#temporals.format(r.createdAt, 'dd/MM/yyyy')} : ''"></td>
+                        <td th:switch="${r.status}">
+                            <span th:case="'Nháp'" class="text-secondary fw-bold">Nháp</span>
+                            <span th:case="'Chờ xét duyệt'" class="text-warning fw-bold">Chờ xét duyệt</span>
+                            <span th:case="'Đã duyệt hồ sơ'" class="text-primary fw-bold">Đã duyệt hồ sơ</span>
+                            <span th:case="'Đã cập nhật điểm'" class="text-success fw-bold">Đã cập nhật điểm</span>
+                            <span th:case="'Từ chối'" class="text-danger fw-bold">Từ chối</span>
+                        </td>
+                        <td>
+                            <div class="action-icons">
+                                <div class="action-icons">
+                                    <a class="text-success" th:each="ss : ${r.subject.scoreSubjects}" th:href="@{/student/regrade-student(scoreId=${ss.id},rId=${r.id})}"><i class="far fa-eye"></i></a>
+                                    <a th:if="${r.status == 'Nháp'}" th:each="ss : ${r.subject.scoreSubjects}">
+                                        <a class="btn-edit" th:href="@{/student/regrade-student(scoreId=${ss.id},rId=${r.id})}"><i class="fa-regular fa-pen-to-square text-success"></i></a>
+                                    </a>
+                                    <a th:if="${r.status == 'Nháp'}">
+                                        <a href="#" th:data-id="${r.id}" onclick="confirmDelete(this)" class="text-danger"><i class="fa-solid fa-trash"></i></a>
+                                    </a>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<!-- Bootstrap Bundle JS (đã bao gồm Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmDelete(element) {
+    const khoaId = element.dataset.id;
+    if (confirm("Bạn có chắc chắn muốn xóa đơn " + khoaId + " này?")) {
+        window.location.href = "/qlsv/student/delete-reg?id=" + khoaId;
+    }
+}
+
+</script>
+</body>
+</html>
