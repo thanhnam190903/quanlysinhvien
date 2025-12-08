@@ -27,3 +27,4 @@ server:
   servlet:
     context-path: /qlsv
     port: 8080
+
