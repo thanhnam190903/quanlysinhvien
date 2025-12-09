@@ -1,6 +1,7 @@
 package com.example.QuanLySinhVien.repository;
 
 import com.example.QuanLySinhVien.entity.Cycle;
+import com.example.QuanLySinhVien.entity.SemesterStatistics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,18 @@ public interface CycleRepository extends JpaRepository<Cycle,Integer> {
             "AND c.deleted = false " +
             "ORDER BY c.startDate DESC")
     List<Cycle> findCyclesByStudent(@Param("studentId") String studentId);
+
+    @Query(value = """
+          SELECT
+              c.id AS cycleId,
+              c.name AS semester,
+              COUNT(DISTINCT s.id) AS classOfSchoolTime,
+              COUNT(DISTINCT ss.student_id) AS numberOfStudentsRegistered
+          FROM cycles c
+          LEFT JOIN subjects s       ON s.cycle_id = c.id
+          LEFT JOIN score_subjects ss ON ss.subject_id = s.id
+          GROUP BY c.id, c.name
+          ORDER BY c.id;
+        """, nativeQuery = true)
+    List<SemesterStatistics> getCycleBySemester();
 }

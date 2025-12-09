@@ -1,0 +1,254 @@
+<div th:fragment="staff-statistics-fram02" class="main-content">
+    <div class="hero-section">
+        <div class="hero-icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_231_341)">
+                    <mask id="mask0_231_341" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="40" height="40">
+                        <path d="M39.9902 0H0.96582V39.0244H39.9902V0Z" fill="white"/>
+                    </mask>
+                    <g mask="url(#mask0_231_341)">
+                        <path d="M20.478 3.24854C17.0244 3.24854 13.717 4.62415 11.278 7.06317C8.83899 9.5022 7.47314 12.8095 7.47314 16.2632C7.47314 19.7071 8.83899 23.0144 11.278 25.4534C13.717 27.9022 17.0244 29.2681 20.478 29.2681C23.9317 29.2681 27.239 27.9022 29.678 25.4534C32.117 23.0144 33.4829 19.7071 33.4829 16.2632C33.4829 12.8095 32.117 9.5022 29.678 7.06317C27.239 4.62415 23.9317 3.24854 20.478 3.24854ZM20.478 35.7754C9.69753 35.7754 0.96582 27.0437 0.96582 16.2632C0.96582 5.48268 9.69753 -3.24902 20.478 -3.24902C31.2585 -3.24902 39.9902 5.48268 39.9902 16.2632C39.9902 27.0437 31.2585 35.7754 20.478 35.7754Z" fill="#2E5DA1"/>
+                        <path d="M20.478 8.12646C19.4049 8.12646 18.3609 8.55573 17.6 9.31671C16.839 10.0874 16.4097 11.1216 16.4097 12.1948C16.4097 13.2679 16.839 14.3021 17.6 15.0728C18.3609 15.8338 19.4049 16.2631 20.478 16.2631C21.5512 16.2631 22.5853 15.8338 23.3561 15.0728C24.117 14.3021 24.5463 13.2679 24.5463 12.1948C24.5463 11.1216 24.117 10.0874 23.3561 9.31671C22.5853 8.55573 21.5512 8.12646 20.478 8.12646ZM20.478 24.3899C17.2292 24.3899 10.7219 26.0191 10.7219 29.2679V32.5167H30.2341V29.2679C30.2341 26.0191 23.7268 24.3899 20.478 24.3899Z" fill="#2E5DA1"/>
+                    </g>
+                </g>
+                <defs>
+                    <clipPath id="clip0_231_341">
+                        <rect width="40" height="39.0244" fill="white"/>
+                    </clipPath>
+                </defs>
+            </svg>
+        </div>
+        <div class="hero-content">
+            <h1>Thống kê tổng quan hệ thống</h1>
+            <p>Báo cáo chi tiết toàn bộ hoạt động</p>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2 class="section-title">🎯 THỐNG KÊ ĐIỂM SINH VIÊN</h2>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stats-card">
+            <h3 class="stats-card-title">Điểm trung bình theo khoa</h3>
+            <div class="department-item" th:each="department : ${departmentsMedium}">
+                <div class="department-header">
+                    <div>
+                        <div class="department-name" th:text="${department.departmentName}">CNTT</div>
+                        <div class="department-students" th:text="|${department.studentNumber} sinh viên|">850 sinh viên</div>
+                    </div>
+                    <div>
+                        <div class="department-score" th:text="${department.pointMedium}">7.8</div>
+                        <div class="department-label">điểm TB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <h3 class="stats-card-title">Tỷ lệ qua môn</h3>
+            <div class="pass-rate-item" th:each="subject : ${ratioScoreSubjectsList}">
+                <div class="semester-label" th:text="${subject.semester}">HK1 2023</div>
+                <div class="pass-rate-values">
+                    <span class="pass-value" th:text="|${subject.ratioPass}%|">85%</span>
+                    <span class="fail-value" th:text="|${subject.ratioFail}%|">15%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-pass" th:style="|width: ${subject.ratioPass}%;|"></div>
+                    <div class="progress-fail" th:style="|width: ${subject.ratioFail}%;|"></div>
+                </div>
+                <div class="progress-labels">
+                    <span class="progress-label">Qua môn</span>
+                    <span class="progress-label">Rớt môn</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card">
+            <h3 class="stats-card-title">Sinh viên xuất sắc</h3>
+            <div class="excellent-student">
+                <div class="student-info">
+                    <div>
+                        <div class="student-name">Nguyễn Văn A</div>
+                        <div class="student-id">SV001 - CNTT-K65</div>
+                    </div>
+                    <div class="student-score">9.2</div>
+                </div>
+            </div>
+            <div class="excellent-student">
+                <div class="student-info">
+                    <div>
+                        <div class="student-name">Trần Thị B</div>
+                        <div class="student-id">SV002 - KT-K65</div>
+                    </div>
+                    <div class="student-score">9</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="histogram-section">
+        <h3 class="histogram-title">Phân bố điểm số (Histogram)</h3>
+        <div class="histogram-item">
+            <div class="histogram-header">
+                <span class="histogram-range">Điểm 9.0-10.0</span>
+                <span class="histogram-count">45 SV</span>
+            </div>
+            <div class="histogram-percent">15% tổng số sinh viên</div>
+            <div class="histogram-bar-bg">
+                <div class="histogram-bar" style="width: 15%"></div>
+            </div>
+        </div>
+        <div class="histogram-item">
+            <div class="histogram-header">
+                <span class="histogram-range">Điểm 8.0-8.9</span>
+                <span class="histogram-count">120 SV</span>
+            </div>
+            <div class="histogram-percent">40% tổng số sinh viên</div>
+            <div class="histogram-bar-bg">
+                <div class="histogram-bar" style="width: 40%"></div>
+            </div>
+        </div>
+        <div class="histogram-item">
+            <div class="histogram-header">
+                <span class="histogram-range">Điểm 7.0-7.9</span>
+                <span class="histogram-count">85 SV</span>
+            </div>
+            <div class="histogram-percent">28% tổng số sinh viên</div>
+            <div class="histogram-bar-bg">
+                <div class="histogram-bar" style="width: 28%"></div>
+            </div>
+        </div>
+        <div class="histogram-item">
+            <div class="histogram-header">
+                <span class="histogram-range">Điểm 6.0-6.9</span>
+                <span class="histogram-count">35 SV</span>
+            </div>
+            <div class="histogram-percent">12% tổng số sinh viên</div>
+            <div class="histogram-bar-bg">
+                <div class="histogram-bar" style="width: 12%"></div>
+            </div>
+        </div>
+        <div class="histogram-item">
+            <div class="histogram-header">
+                <span class="histogram-range">Điểm < 6.0</span>
+                <span class="histogram-count">15 SV</span>
+            </div>
+            <div class="histogram-percent">5% tổng số sinh viên</div>
+            <div class="histogram-bar-bg">
+                <div class="histogram-bar" style="width: 5%"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2 class="section-title">📝 THỐNG KÊ PHÚC KHẢO ĐIỂM</h2>
+    </div>
+
+    <div class="summary-cards">
+        <div class="summary-card">
+            <div class="summary-value">156</div>
+            <div class="summary-label">Tổng đơn phúc khảo</div>
+            <div class="summary-change">+12%</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-value">142</div>
+            <div class="summary-label">Đã xử lý</div>
+            <div class="summary-change">+8%</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-value">14</div>
+            <div class="summary-label">Đang chờ</div>
+            <div class="summary-change">-5%</div>
+        </div>
+    </div>
+
+    <div class="review-grid">
+        <div class="review-card">
+            <h3 class="review-card-title">Tỷ lệ xử lý phúc khảo</h3>
+            <div class="review-result-item">
+                <div class="result-indicator indicator-accept"></div>
+                <div class="result-content">
+                    <div class="result-stats">
+                        <div>
+                            <div class="result-label">Chấp nhận</div>
+                        </div>
+                        <div>
+                            <div class="result-number">89</div>
+                            <div class="result-percent">63%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="review-result-item">
+                <div class="result-indicator indicator-reject"></div>
+                <div class="result-content">
+                    <div class="result-stats">
+                        <div>
+                            <div class="result-label">Từ chối</div>
+                        </div>
+                        <div>
+                            <div class="result-number">53</div>
+                            <div class="result-percent">37%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <h3 class="review-card-title">Hiệu quả xử lý</h3>
+            <div class="efficiency-metric">
+                <div class="efficiency-value efficiency-value-primary">5.2 ngày</div>
+                <div class="efficiency-label">Thời gian xử lý trung bình</div>
+            </div>
+            <div class="efficiency-metric">
+                <div class="efficiency-value efficiency-value-blue">68%</div>
+                <div class="efficiency-label">Tỷ lệ thay đổi điểm</div>
+            </div>
+        </div>
+
+        <div class="review-card">
+            <h3 class="review-card-title">Phúc khảo theo khoa</h3>
+            <div class="department-review-item">
+                <div class="review-dept-header">
+                    <span class="review-dept-name">CNTT</span>
+                    <span class="review-dept-count">45 đơn</span>
+                </div>
+                <div class="review-dept-detail">
+                    <span class="review-dept-label">Chấp nhận</span>
+                    <span class="review-dept-ratio">28/45</span>
+                </div>
+                <div class="review-progress-bar">
+                    <div class="review-progress" style="width: 62%"></div>
+                </div>
+            </div>
+            <div class="department-review-item">
+                <div class="review-dept-header">
+                    <span class="review-dept-name">Kinh tế</span>
+                    <span class="review-dept-count">32 đơn</span>
+                </div>
+                <div class="review-dept-detail">
+                    <span class="review-dept-label">Chấp nhận</span>
+                    <span class="review-dept-ratio">20/32</span>
+                </div>
+                <div class="review-progress-bar">
+                    <div class="review-progress" style="width: 63%"></div>
+                </div>
+            </div>
+            <div class="department-review-item">
+                <div class="review-dept-header">
+                    <span class="review-dept-name">Ngoại ngữ</span>
+                    <span class="review-dept-count">28 đơn</span>
+                </div>
+                <div class="review-dept-detail">
+                    <span class="review-dept-label">Chấp nhận</span>
+                    <span class="review-dept-ratio">18/28</span>
+                </div>
+                <div class="review-progress-bar">
+                    <div class="review-progress" style="width: 64%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 package com.example.QuanLySinhVien.repository;
 
 import com.example.QuanLySinhVien.dto.ScoreSubjectProjection;
+import com.example.QuanLySinhVien.entity.RatioScoreSubjects;
 import com.example.QuanLySinhVien.entity.ScoreSubject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -72,5 +73,20 @@ public interface ScoreSubjectRepository extends JpaRepository<ScoreSubject,Integ
     @Query("SELECT s FROM ScoreSubject s WHERE s.student.id = :studentId AND s.subject.id = :subjectId AND s.deleted = false")
     ScoreSubject findScoreByStudentAndSubject(@Param("studentId") String studentId, @Param("subjectId") int subjectId);
 
+    @Query(value = """
+            SELECT 
+                cy.name AS semester,
+                COUNT(*) AS totalNumberOfStudents,
+                SUM(CASE WHEN ss.total_score >= 5 THEN 1 ELSE 0 END) AS pass,
+                SUM(CASE WHEN ss.total_score < 5 THEN 1 ELSE 0 END)  AS fail,
+                ROUND(SUM(CASE WHEN ss.total_score >= 5 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ratioPass,
+                ROUND(SUM(CASE WHEN ss.total_score < 5 THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS ratioFail
+            FROM score_subjects ss
+            JOIN subjects s ON s.id = ss.subject_id
+            JOIN cycles cy  ON cy.id = s.cycle_id
+            GROUP BY cy.name;
+        """,
+            nativeQuery = true)
+    List<RatioScoreSubjects> getRatioScoreSubjects();
 
 }

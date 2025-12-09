@@ -1,4 +1,4 @@
-<div class="col-md-3 col-lg-3 sidebar" th:fragment="navbar">
+<div class="col-md-3 col-lg-3 sidebar" th:fragment="navbar" xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="sidebar-item">
         <a th:href="@{/quantri/profile}" sec:authorize="hasRole('admin')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
     </div>
@@ -47,6 +47,9 @@
     </div>
     <div class="sidebar-item">
         <a th:href="@{/student/regrades}" sec:authorize="hasRole('student')" th:classappend="${activePage == 'regrade-student'} ? 'active' : ''">Phúc khảo</a>
+    </div>
+    <div class="sidebar-item">
+        <a th:href="@{/staff/statistics}" sec:authorize="hasRole('staff')" th:classappend="${activePage == 'staff-statistics'} ? 'active' : ''">Thông kê</a>
     </div>
 
 </div>

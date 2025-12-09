@@ -1,0 +1,145 @@
+<div th:fragment="staff-statistics-fram01" class="main-content">
+    <div class="content-header">
+        <h2 class="section-title">📊 THỐNG KÊ NGƯỜI DÙNG</h2>
+    </div>
+
+
+    <div class="stats-grid">
+        <!-- User Types Panel -->
+        <div class="panel">
+            <div class="stat-cards">
+                <div class="stat-card" th:each="roleStat : ${userRoleStatistics}">
+                    <div class="stat-card-content">
+                        <div class="stat-indicator blue-indicator"></div>
+                        <span class="stat-label" th:text="${roleStat.roleName}"></span>
+                    </div>
+                    <div class="stat-values">
+                        <div class="stat-number" th:text="${roleStat.totalUser}"></div>
+                        <div class="stat-text">tài khoản</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Status Panel -->
+        <div class="panel">
+            <h2 class="panel-title">Trạng thái hoạt động</h2>
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <div class="stat-card-content">
+                        <div class="stat-indicator green-indicator"></div>
+                        <span class="stat-label">Đang hoạt động</span>
+                    </div>
+                    <div class="stat-values">
+                        <div class="stat-number" th:text="${userStatus.active}">2780</div>
+                        <div class="stat-text" th:text="|${userStatus.activePct}%|">%</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-content">
+                        <div class="stat-indicator red-indicator"></div>
+                        <span class="stat-label">Bị khóa</span>
+                    </div>
+                    <div class="stat-values">
+                        <div class="stat-number"  th:text="${userStatus.inactive}" >45</div>
+                        <div class="stat-text"  th:text="|${userStatus.inactivePct}%|" >2%</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-content">
+                        <div class="stat-indicator orange-indicator"></div>
+                        <span class="stat-label">Mới tạo</span>
+                    </div>
+                    <div class="stat-values">
+                        <div class="stat-number" th:text="${userStatus.newUser}" >168</div>
+                        <div class="stat-text"  th:text="|${userStatus.newUserPct}%|" >6%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Distribution by Department -->
+    <div class="panel department-panel">
+        <h2 class="panel-title">Phân bố sinh viên theo khoa</h2>
+        <div class="department-grid" th:each="userDept : ${usersByDept}">
+            <div class="department-card">
+                <div class="department-circle blue-circle">
+                    <span class="department-count" th:text="${userDept.countStudent}" >850</span>
+                </div>
+                <div class="department-name" th:text="${userDept.departmentName}">CNTT</div>
+                <div class="department-percentage" th:text="${userDept.percent}">28%</div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <!-- Program Statistics Section -->
+    <section class="section">
+        <div class="section-header">
+            <h1 class="section-title">📚 THỐNG KÊ CHƯƠNG TRÌNH HỌC</h1>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="program-stats-grid">
+            <div class="program-stat-card">
+                <div class="program-icon">🏛️</div>
+                <div class="program-stat-number" th:text="${userAllocation.countDepartments}">12</div>
+                <div class="program-stat-label">Số khoa</div>
+            </div>
+
+            <div class="program-stat-card">
+                <div class="program-icon">📖</div>
+                <div class="program-stat-number" th:text="${userAllocation.countSubjects}">320</div>
+                <div class="program-stat-label">Môn học đang mở</div>
+            </div>
+
+            <div class="program-stat-card">
+                <div class="program-icon">👥</div>
+                <div class="program-stat-number" th:text="${userAllocation.countClasses}">156</div>
+                <div class="program-stat-label">Lớp học phần</div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <!-- Classes by Semester Panel -->
+            <div class="panel">
+                <h2 class="panel-title">Lớp học phần theo học kỳ</h2>
+                <div class="progress-cards">
+                    <div class="progress-card" th:each="cycleBySemester : ${cycleBySemesters}">
+                        <div class="progress-header">
+                            <span class="progress-label" th:text="${cycleBySemester.semester}">HK1 2023-2024</span>
+                            <span class="progress-value primary-text"  th:text="|${cycleBySemester.classOfSchoolTime} lớp|">89 lớp</span>
+                        </div>
+                        <div class="progress-info"  th:text="|${cycleBySemester.numberOfStudentsRegistered} sinh viên đăng ký|">2340 sinh viên đăng ký</div>
+<!--                        <div class="progress-bar-container">-->
+<!--                            <div class="progress-bar-item" style="width: 93%"></div>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Level Panel -->
+            <div class="panel">
+                <h2 class="panel-title">Mức độ đăng ký học</h2>
+                <div class="progress-cards">
+                    <div class="progress-card" th:each="subjectByStudent : ${subjectsByStudent}">
+                        <div class="progress-header">
+                            <span class="progress-label" th:text="${subjectByStudent.subjectName}">Lập trình C++</span>
+                            <span class="progress-value"></span>
+                        </div>
+                        <div class="progress-footer">
+                            <span class="progress-info">Đã đăng ký</span>
+                            <span class="progress-info" th:text="|${subjectByStudent.numberStudentsRegistered} sinh viên đăng ký|"></span>
+                        </div>
+<!--                        <div class="progress-bar-container">-->
+<!--                            <div class="progress-bar-item" style="width: 87%"></div>-->
+<!--                        </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,6 +1,7 @@
 package com.example.QuanLySinhVien.repository;
 
 import com.example.QuanLySinhVien.entity.Subject;
+import com.example.QuanLySinhVien.entity.SubjectByStudentStatistics;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,4 +36,17 @@ public interface SubjectRepository extends JpaRepository<Subject,Integer> {
             "OR cy.name LIKE %:keyword% " +
             "OR u.name LIKE %:keyword%)")
     Page<Subject> searchSubjects(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query(value = """
+          SELECT 
+                s.id AS subjectId,
+                s.name AS subjectName,
+                COUNT(DISTINCT ss.student_id) AS numberStudentsRegistered
+            FROM subjects s
+            LEFT JOIN score_subjects ss ON ss.subject_id = s.id
+            GROUP BY s.id, s.name
+            ORDER BY numberStudentsRegistered DESC;
+            
+        """, nativeQuery = true)
+    List<SubjectByStudentStatistics> getSubjectsByStudent();
 }
