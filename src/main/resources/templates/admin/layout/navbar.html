@@ -1,15 +1,30 @@
 <div class="col-md-3 col-lg-3 sidebar" th:fragment="navbar" xmlns:sec="http://www.w3.org/1999/xhtml">
-    <div class="sidebar-item">
-        <a th:href="@{/quantri/profile}" sec:authorize="hasRole('admin')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
+    <div class="sidebar-item" sec:authorize="hasRole('admin')">
+        <a th:href="@{/quantri/profile}"
+           th:classappend="${activePage == 'profile'} ? 'active' : ''">
+            Hồ sơ
+        </a>
     </div>
-    <div class="sidebar-item">
-        <a th:href="@{/teacher/profile}" sec:authorize="hasRole('teacher')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
+
+    <div class="sidebar-item" sec:authorize="!hasRole('admin') and hasRole('staff')">
+        <a th:href="@{/staff/profile}"
+           th:classappend="${activePage == 'profile'} ? 'active' : ''">
+            Hồ sơ
+        </a>
     </div>
-    <div class="sidebar-item">
-        <a th:href="@{/student/profile}" sec:authorize="hasRole('student')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
+
+    <div class="sidebar-item" sec:authorize="!hasRole('admin') and !hasRole('staff') and hasRole('teacher')">
+        <a th:href="@{/teacher/profile}"
+           th:classappend="${activePage == 'profile'} ? 'active' : ''">
+            Hồ sơ
+        </a>
     </div>
-    <div class="sidebar-item">
-        <a th:href="@{/staff/profile}" sec:authorize="hasRole('staff')" th:classappend="${activePage == 'profile'} ? 'active' : ''" class="">Hồ sơ</a>
+
+    <div class="sidebar-item" sec:authorize="!hasRole('admin') and !hasRole('staff') and !hasRole('teacher') and hasRole('student')">
+        <a th:href="@{/student/profile}"
+           th:classappend="${activePage == 'profile'} ? 'active' : ''">
+            Hồ sơ
+        </a>
     </div>
     <div class="sidebar-item">
         <a th:href="@{/quantri/teachers}" sec:authorize="hasRole('admin')" th:classappend="${activePage == 'teacher'} ? 'active' : ''">Quản lý giáo viên</a>
