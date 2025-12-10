@@ -1,6 +1,8 @@
 package com.example.QuanLySinhVien.repository;
 
 import com.example.QuanLySinhVien.dto.ScoreSubjectProjection;
+import com.example.QuanLySinhVien.entity.HistogramStudentsSubjects;
+import com.example.QuanLySinhVien.entity.OutstandingStudentsSubjects;
 import com.example.QuanLySinhVien.entity.RatioScoreSubjects;
 import com.example.QuanLySinhVien.entity.ScoreSubject;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -89,4 +91,43 @@ public interface ScoreSubjectRepository extends JpaRepository<ScoreSubject,Integ
             nativeQuery = true)
     List<RatioScoreSubjects> getRatioScoreSubjects();
 
+    @Query(value = """
+            SELECT 
+                u.id AS studentCode,
+                u.name AS studentName,
+                AVG(ss.total_score) AS mediumScore
+            FROM score_subjects ss
+            JOIN users u ON u.id = ss.student_id
+            GROUP BY u.id, u.name
+            HAVING AVG(ss.total_score) >= 8.5
+            ORDER BY mediumScore DESC
+            LIMIT 10;
+        """,
+            nativeQuery = true)
+    List<OutstandingStudentsSubjects> getOutstandingStudents();
+
+    @Query(value = """
+            SELECT 
+                CASE 
+                    WHEN ss.total_score >= 9  THEN '9.0-10.0'
+                    WHEN ss.total_score >= 8  THEN '8.0-8.9'
+                    WHEN ss.total_score >= 7  THEN '7.0-7.9'
+                    WHEN ss.total_score >= 6  THEN '6.0-6.9'
+                    ELSE '< 6.0'
+                END AS pointArea,
+                COUNT(*) AS studentNumber,
+                ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM score_subjects), 2) AS scoreRate
+            FROM score_subjects ss
+            GROUP BY pointArea
+            ORDER BY 
+                CASE pointArea
+                    WHEN '9.0-10.0' THEN 1
+                    WHEN '8.0-8.9' THEN 2
+                    WHEN '7.0-7.9' THEN 3
+                    WHEN '6.0-6.9' THEN 4
+                    ELSE 5
+                END;
+        """,
+            nativeQuery = true)
+    List<HistogramStudentsSubjects> getHistogramStudents();
 }

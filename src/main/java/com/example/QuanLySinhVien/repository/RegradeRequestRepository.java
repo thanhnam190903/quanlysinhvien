@@ -1,6 +1,6 @@
 package com.example.QuanLySinhVien.repository;
 
-import com.example.QuanLySinhVien.entity.RegradeRequest;
+import com.example.QuanLySinhVien.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -57,4 +57,71 @@ public interface RegradeRequestRepository extends JpaRepository<RegradeRequest,I
                                          @Param("createdAt") LocalDate createdAt,
                                          Pageable pageable);
 
+    @Query(value = """
+            SELECT
+                COUNT(*) AS total,
+                SUM(CASE WHEN status IS NULL OR status = 'Chờ xét duyệt' THEN 1 ELSE 0 END) AS waiting,
+                SUM(CASE WHEN status IS NOT NULL AND status not in ('Từ chối', 'Đã cập nhật điểm') THEN 1 ELSE 0 END) AS process
+            FROM regrade_request;
+        """,
+            nativeQuery = true)
+    List<RegradeRequestSubjects> getRegradeRequest();
+
+    @Query(value = """
+           SELECT
+                 SUM(CASE WHEN status IN ('Đã cập nhật điểm', 'Đã duyệt hồ sơ') THEN 1 ELSE 0 END) AS accept,
+                 SUM(CASE WHEN status = 'Từ chối' THEN 1 ELSE 0 END) AS reject,
+                 COUNT(*) AS tong_don,
+                 ROUND(SUM(CASE WHEN status IN ('Đã cập nhật điểm', 'Đã duyệt hồ sơ') THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS acceptRate,
+                 ROUND(SUM(CASE WHEN status = 'Từ chối' THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 2) AS rejectRate
+             FROM regrade_request;
+        """,
+            nativeQuery = true)
+    List<RejectAndAcceptSubjects> getRegradeRequestRejectAndAccept();
+
+    @Query(value = """
+           SELECT
+               ROUND(AVG(DATEDIFF(updated_at, request_date)), 1) AS mediumProcess,
+               ROUND(
+                   SUM(CASE WHEN new_score IS NOT NULL AND old_score IS NOT NULL AND new_score <> old_score THEN 1 ELSE 0 END)
+                   * 100.0 / COUNT(*),
+                   2
+               ) AS acceptChangeRate
+           FROM regrade_request
+           WHERE updated_at IS NOT NULL;
+        """,
+            nativeQuery = true)
+    List<MediumProcessAndAcceptChangeRateSubjects> getMediumProcessAndAcceptChangeRate();
+
+    @Query(value = """
+           SELECT  
+               d.name AS departmentName,
+               COUNT(r.id) AS total,
+               SUM(CASE  
+                   WHEN r.status IN ('Đã cập nhật điểm', 'Đã duyệt hồ sơ') THEN 1  
+                   ELSE 0  
+               END) AS acceptNumber,
+               CONCAT(
+                   SUM(CASE  
+                       WHEN r.status IN ('Đã cập nhật điểm', 'Đã duyệt hồ sơ') THEN 1  
+                       ELSE 0  
+                   END),
+                   '/', COUNT(r.id)
+               ) AS acceptRateText,
+               ROUND(
+                   SUM(CASE  
+                       WHEN r.status IN ('Đã cập nhật điểm', 'Đã duyệt hồ sơ') THEN 1  
+                       ELSE 0  
+                   END) * 100.0 / COUNT(r.id),
+                   2
+               ) AS acceptRate
+           FROM regrade_request r
+           JOIN users u           ON u.id = r.student_id
+           JOIN class_student cs  ON cs.student_id = u.id
+           JOIN classes c         ON c.id = cs.class_id
+           JOIN departments d     ON d.id = c.department_id
+           GROUP BY d.name;
+        """,
+            nativeQuery = true)
+    List<RegradeRequestByDepartmentSubjects> getRegradeRequestByDepartment();
 }

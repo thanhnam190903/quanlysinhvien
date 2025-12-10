@@ -256,7 +256,7 @@
                                 <a href="" class="text-success" data-bs-toggle="modal" data-bs-target="#regradeModal"></a>
                                 <button class="btn btn-sm text-white open-score-btn" th:data-id="${s.id}" style="background:#2E5DA1;" th:if="${s.startDate == null}">Thêm mới</button>
                                 <a href="" class="text-success" data-bs-toggle="modal" data-bs-target="#scoreUpdateModal"></a>
-                                <button class="btn btn-sm text-white update-score-btn" th:data-id="${s.id}" th:date-start="${s.startDate}" th:data-end="${s.endDate}"
+                                <button class="btn btn-sm text-white update-score-btn" th:data-id="${s.id}" th:data-start="${s.startDate}" th:data-end="${s.endDate}"
                                         style="background:#2E5DA1;" th:if="${s.startDate != null}">Chỉnh sửa</button>
                             </div>
 

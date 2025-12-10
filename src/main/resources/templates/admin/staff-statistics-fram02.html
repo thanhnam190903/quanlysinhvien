@@ -66,22 +66,13 @@
 
         <div class="stats-card">
             <h3 class="stats-card-title">Sinh viên xuất sắc</h3>
-            <div class="excellent-student">
+            <div class="excellent-student" th:each="student : ${outstandingStudents}">
                 <div class="student-info">
                     <div>
-                        <div class="student-name">Nguyễn Văn A</div>
-                        <div class="student-id">SV001 - CNTT-K65</div>
+                        <div class="student-name" th:text="${student.studentName}">Nguyễn Văn A</div>
+                        <div class="student-id" th:text="${student.studentCode}">SV001 - CNTT-K65</div>
                     </div>
-                    <div class="student-score">9.2</div>
-                </div>
-            </div>
-            <div class="excellent-student">
-                <div class="student-info">
-                    <div>
-                        <div class="student-name">Trần Thị B</div>
-                        <div class="student-id">SV002 - KT-K65</div>
-                    </div>
-                    <div class="student-score">9</div>
+                    <div class="student-score" th:text="${student.mediumScore}">9.2</div>
                 </div>
             </div>
         </div>
@@ -89,54 +80,14 @@
 
     <div class="histogram-section">
         <h3 class="histogram-title">Phân bố điểm số (Histogram)</h3>
-        <div class="histogram-item">
+        <div class="histogram-item" th:each="student : ${histogramStudents}">
             <div class="histogram-header">
-                <span class="histogram-range">Điểm 9.0-10.0</span>
-                <span class="histogram-count">45 SV</span>
+                <span class="histogram-range" th:text="${student.pointArea}">Điểm 9.0-10.0</span>
+                <span class="histogram-count" th:text="${student.studentNumber}">45 SV</span>
             </div>
-            <div class="histogram-percent">15% tổng số sinh viên</div>
+            <div class="histogram-percent"  th:text="|${student.scoreRate}% tổng số sinh viên|">15% tổng số sinh viên</div>
             <div class="histogram-bar-bg">
-                <div class="histogram-bar" style="width: 15%"></div>
-            </div>
-        </div>
-        <div class="histogram-item">
-            <div class="histogram-header">
-                <span class="histogram-range">Điểm 8.0-8.9</span>
-                <span class="histogram-count">120 SV</span>
-            </div>
-            <div class="histogram-percent">40% tổng số sinh viên</div>
-            <div class="histogram-bar-bg">
-                <div class="histogram-bar" style="width: 40%"></div>
-            </div>
-        </div>
-        <div class="histogram-item">
-            <div class="histogram-header">
-                <span class="histogram-range">Điểm 7.0-7.9</span>
-                <span class="histogram-count">85 SV</span>
-            </div>
-            <div class="histogram-percent">28% tổng số sinh viên</div>
-            <div class="histogram-bar-bg">
-                <div class="histogram-bar" style="width: 28%"></div>
-            </div>
-        </div>
-        <div class="histogram-item">
-            <div class="histogram-header">
-                <span class="histogram-range">Điểm 6.0-6.9</span>
-                <span class="histogram-count">35 SV</span>
-            </div>
-            <div class="histogram-percent">12% tổng số sinh viên</div>
-            <div class="histogram-bar-bg">
-                <div class="histogram-bar" style="width: 12%"></div>
-            </div>
-        </div>
-        <div class="histogram-item">
-            <div class="histogram-header">
-                <span class="histogram-range">Điểm < 6.0</span>
-                <span class="histogram-count">15 SV</span>
-            </div>
-            <div class="histogram-percent">5% tổng số sinh viên</div>
-            <div class="histogram-bar-bg">
-                <div class="histogram-bar" style="width: 5%"></div>
+                <div class="histogram-bar" th:style="|width: ${student.scoreRate}%;|"></div>
             </div>
         </div>
     </div>
@@ -147,17 +98,17 @@
 
     <div class="summary-cards">
         <div class="summary-card">
-            <div class="summary-value">156</div>
+            <div class="summary-value" th:text="${regradeRequest.total}">156</div>
             <div class="summary-label">Tổng đơn phúc khảo</div>
             <div class="summary-change">+12%</div>
         </div>
         <div class="summary-card">
-            <div class="summary-value">142</div>
+            <div class="summary-value"  th:text="${regradeRequest.waiting}">142</div>
             <div class="summary-label">Đã xử lý</div>
             <div class="summary-change">+8%</div>
         </div>
         <div class="summary-card">
-            <div class="summary-value">14</div>
+            <div class="summary-value" th:text="${regradeRequest.process}">14</div>
             <div class="summary-label">Đang chờ</div>
             <div class="summary-change">-5%</div>
         </div>
@@ -174,8 +125,8 @@
                             <div class="result-label">Chấp nhận</div>
                         </div>
                         <div>
-                            <div class="result-number">89</div>
-                            <div class="result-percent">63%</div>
+                            <div class="result-number" th:text="${regradeRequestRejectAndAccept.accept}">89</div>
+                            <div class="result-percent" th:text="|${regradeRequestRejectAndAccept.acceptRate}%|">63%</div>
                         </div>
                     </div>
                 </div>
@@ -188,8 +139,8 @@
                             <div class="result-label">Từ chối</div>
                         </div>
                         <div>
-                            <div class="result-number">53</div>
-                            <div class="result-percent">37%</div>
+                            <div class="result-number" th:text="${regradeRequestRejectAndAccept.reject}">53</div>
+                            <div class="result-percent" th:text="|${regradeRequestRejectAndAccept.rejectRate}%|">37%</div>
                         </div>
                     </div>
                 </div>
@@ -199,54 +150,28 @@
         <div class="review-card">
             <h3 class="review-card-title">Hiệu quả xử lý</h3>
             <div class="efficiency-metric">
-                <div class="efficiency-value efficiency-value-primary">5.2 ngày</div>
+                <div class="efficiency-value efficiency-value-primary" th:text="|${mediumProcessAndAcceptChangeRate.mediumProcess} ngày|">5.2 ngày</div>
                 <div class="efficiency-label">Thời gian xử lý trung bình</div>
             </div>
             <div class="efficiency-metric">
-                <div class="efficiency-value efficiency-value-blue">68%</div>
+                <div class="efficiency-value efficiency-value-blue" th:text="|${mediumProcessAndAcceptChangeRate.acceptChangeRate}%|">68%</div>
                 <div class="efficiency-label">Tỷ lệ thay đổi điểm</div>
             </div>
         </div>
 
         <div class="review-card">
             <h3 class="review-card-title">Phúc khảo theo khoa</h3>
-            <div class="department-review-item">
+            <div class="department-review-item" th:each="department : ${regradeRequestByDepartments}">
                 <div class="review-dept-header">
                     <span class="review-dept-name">CNTT</span>
-                    <span class="review-dept-count">45 đơn</span>
+                    <span class="review-dept-count" th:text="|${department.total} đơn|">45 đơn</span>
                 </div>
                 <div class="review-dept-detail">
                     <span class="review-dept-label">Chấp nhận</span>
-                    <span class="review-dept-ratio">28/45</span>
+                    <span class="review-dept-ratio" th:text="${department.acceptRateText}">28/45</span>
                 </div>
                 <div class="review-progress-bar">
-                    <div class="review-progress" style="width: 62%"></div>
-                </div>
-            </div>
-            <div class="department-review-item">
-                <div class="review-dept-header">
-                    <span class="review-dept-name">Kinh tế</span>
-                    <span class="review-dept-count">32 đơn</span>
-                </div>
-                <div class="review-dept-detail">
-                    <span class="review-dept-label">Chấp nhận</span>
-                    <span class="review-dept-ratio">20/32</span>
-                </div>
-                <div class="review-progress-bar">
-                    <div class="review-progress" style="width: 63%"></div>
-                </div>
-            </div>
-            <div class="department-review-item">
-                <div class="review-dept-header">
-                    <span class="review-dept-name">Ngoại ngữ</span>
-                    <span class="review-dept-count">28 đơn</span>
-                </div>
-                <div class="review-dept-detail">
-                    <span class="review-dept-label">Chấp nhận</span>
-                    <span class="review-dept-ratio">18/28</span>
-                </div>
-                <div class="review-progress-bar">
-                    <div class="review-progress" style="width: 64%"></div>
+                    <div class="review-progress" th:style="|width: ${department.acceptRate}%;|"</div>
                 </div>
             </div>
         </div>
