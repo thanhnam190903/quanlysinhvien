@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/layout/head :: head"></head>
+<body>
+<div th:replace="admin/layout/header :: header"></div>
+
+<div class="container mt-5 text-center">
+    <h1 class="display-4 text-danger fw-bold">403</h1>
+    <h3 class="mb-3">Bạn không có quyền truy cập trang này</h3>
+    <p class="text-muted mb-4">
+        Có vẻ như tài khoản hiện tại không đủ quyền hạn để xem nội dung này.
+    </p>
+
+    <a th:href="@{/qlsv/quantri/profile}" class="btn btn-primary me-2">Về trang chủ</a>
+    <a th:href="@{/qlsv/showloginpage}" class="btn btn-outline-secondary">Đăng nhập tài khoản khác</a>
+</div>
+
+</body>
+</html>

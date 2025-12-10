@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/student")
@@ -45,6 +46,12 @@ public class StudentSubjectController {
         User student = userRepository.findById(principal.getName()).orElse(null);
         List<Cycle> cycList = cycleRepository.findAll();
         Department department = departmentRepository.findDepartmentByStudentId(student.getId());
+        if(Objects.isNull(department)) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("profile", student);
+            model.addAllAttributes(data);
+            return "admin/layout/403";
+        }
         Pageable pageable = PageRequest.of(page, size);
         Page<Subject> pageSubjects;
 
