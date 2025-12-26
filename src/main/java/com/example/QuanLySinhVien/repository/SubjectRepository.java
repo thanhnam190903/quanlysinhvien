@@ -1,7 +1,7 @@
 package com.example.QuanLySinhVien.repository;
 
 import com.example.QuanLySinhVien.entity.Subject;
-import com.example.QuanLySinhVien.entity.SubjectByStudentStatistics;
+import com.example.QuanLySinhVien.dto.SubjectByStudentStatistics;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -84,7 +84,15 @@
                         </div>
                         <div>
                             <h3 class="name" th:text="${profile.name}">Nguyễn Văn An</h3>
-                            <p class="role">Quản trị hệ thống</p>
+                            <p class="role" th:text="${#strings.listJoin(
+        profile.roles.![
+            name == 'ROLE_admin' ? 'Quản trị hệ thống' :
+            name == 'ROLE_teacher' ? 'Giáo viên' :
+            name == 'ROLE_staff' ? 'Nhân viên' :
+            name == 'ROLE_student' ? 'Sinh viên' :
+            'Không xác định'
+        ],
+   ', ')}">Quản trị hệ thống</p>
                         </div>
                     </div>
 
@@ -96,12 +104,22 @@
 
                         <div class="form-group">
                             <label>Chức vụ</label>
-                            <input type="text" value="Quản trị hệ thống"  readonly>
+                            <input type="text" class="form-control"
+                                   th:value="${#strings.listJoin(
+                profile.roles.![
+                    name == 'ROLE_admin' ? 'Quản trị viên' :
+                    name == 'ROLE_teacher' ? 'Giáo viên' :
+                    name == 'ROLE_staff' ? 'Nhân viên' :
+                    name == 'ROLE_student' ? 'Sinh viên' :
+                    'Không xác định'
+                ],
+           ', ')}"
+                                   readonly>
                         </div>
 
                         <div class="form-group">
                             <label>Ngày sinh</label>
-                            <input type="text" th:value="${profile.dateOfBirth}" required>
+                            <input type="date" th:value="${profile.dateOfBirth}" required>
                         </div>
 
                         <div class="form-group">
@@ -109,7 +127,7 @@
                             <input type="text" th:value="${profile.email}" required>
                         </div>
 
-                        <div class="form-group full">
+                        <div class="form-group">
                             <label>Số điện thoại</label>
                             <input type="text" th:value="${profile.phone}" required>
                         </div>

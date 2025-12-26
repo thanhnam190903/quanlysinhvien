@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -52,20 +53,34 @@ public class ClassTeacherController {
     @GetMapping("/student-class")
     public String getAllStudent(@RequestParam("classId") int classId,
                                 @RequestParam(value = "studentId", required = false) String studentId,
+                                @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                @RequestParam(value = "page", defaultValue = "0") int page,
                                 Model model,
                                 Principal principal) {
 
         User teacher = userRepository.findById(principal.getName()).orElse(null);
-        List<User> studentList = userRepository.findStudentsByClassId(classId);
+
+        // Phân trang + tìm kiếm
+        Pageable pageable = PageRequest.of(page, 3, Sort.by("id").ascending());
+        Page<User> studentPage;
+
+        if (keyword.isEmpty()) {
+            studentPage = userRepository.findStudentsByClassId(classId, pageable);
+        } else {
+            studentPage = userRepository.findStudentsByClassIdAndKeyword(classId, keyword, pageable);
+        }
+
         Clazz clazz = classRepository.findById(classId).orElse(null);
         model.addAttribute("clazz", clazz);
-        model.addAttribute("studentList", studentList);
+        model.addAttribute("studentList", studentPage.getContent());
+        model.addAttribute("pageData", studentPage);
+        model.addAttribute("keyword", keyword);
         model.addAttribute("profile", teacher);
         model.addAttribute("activePage", "class");
+
         if (studentId != null) {
             List<ScoreSubjectProjection> scores =
-                    scoreSubjectRepository.getScoreSubjectRaw(studentId,teacher.getId());
-
+                    scoreSubjectRepository.getScoreSubjectRaw(studentId, teacher.getId());
             User student = userRepository.findById(studentId).orElse(null);
 
             model.addAttribute("student", student);

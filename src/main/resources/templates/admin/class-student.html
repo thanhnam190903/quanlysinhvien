@@ -64,7 +64,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <div th:if="${studentList.totalPages > 0}">
+                <div th:if="${studentList.totalPages > 0}" style="float: right;">
                     <ul class="pagination pagination-sm no-margin pull-right">
                         <!-- Prev -->
                         <li class="page-item" th:classappend="${studentList.first} ? 'disabled'">

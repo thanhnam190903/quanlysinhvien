@@ -58,6 +58,7 @@ public class StatisticsController {
         data.put("ratioScoreSubjectsList", ratioScoreSubjectsList);
         data.put("outstandingStudents", outstandingStudents);
         data.put("histogramStudents", histogramStudents);
+        data.put("activePage","staff-statistics");
         model.addAllAttributes(data);
         return "admin/staff-statistics";
     }

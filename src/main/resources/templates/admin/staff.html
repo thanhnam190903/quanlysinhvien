@@ -19,10 +19,21 @@
                 <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">Thêm mới</a>
                 <a href="#"
                    class="btn btn-success" data-bs-toggle="modal"
-                   data-bs-target="#uploadModal">Thêm nhiều</a>
+                   data-bs-target="#importModal">Thêm nhiều</a>
             </div>
 
             <div class="table-container">
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <strong>Thành công!</strong> <span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <strong>Lỗi!</strong> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
                 <div th:if="${successMessage}" class="alert alert-success">
                     <span th:text="${successMessage}"></span>
                 </div>
@@ -185,6 +196,99 @@
     </div>
 </div>
 
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header text-white" style="background-color: #2e5da1;">
+                <h5 class="modal-title">Import dữ liệu từ Excel</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <form id="importForm" th:action="@{/quantri/import}" method="POST" enctype="multipart/form-data" style="text-align: center;">
+                    <label for="fileInput" class="upload-box" id="uploadBox">
+                        <div class="upload-icon">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                        </div>
+                        <div>
+                            <b>Kéo thả file vào đây</b> hoặc<br>
+                            <span class="text-primary">chọn file</span>
+                        </div>
+                        <small class="text-muted d-block mt-2">
+                            Hỗ trợ: .xlsx, .xls, .csv (Tối đa 10MB)
+                        </small>
+                        <div class="file-name" id="fileName"></div>
+                        <input type="file" id="fileInput" name="file" hidden accept=".xls,.xlsx,.csv">
+                    </label>
+                </form>
+
+                <!-- Hướng dẫn format file -->
+                <div class="alert alert-info mt-3 mb-0">
+                    <strong>Định dạng file Excel:</strong>
+                    <ul class="mb-0 mt-2" style="font-size: 13px;">
+                        <li>Cột 1: ID (bắt buộc)</li>
+                        <li>Cột 2: Tên (bắt buộc)</li>
+                        <li>Cột 3: Email</li>
+                        <li>Cột 4: Điện thoại</li>
+                        <li>Cột 5: Địa chỉ</li>
+                        <li>Cột 6: Ngày sinh (dd/MM/yyyy)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" form="importForm" class="btn btn-primary" id="uploadBtn" disabled>
+                    <i class="bi bi-upload me-2"></i>Upload
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div class="modal fade" id="importModal" tabindex="-1">-->
+<!--    <div class="modal-dialog modal-dialog-centered">-->
+<!--        <div class="modal-content">-->
+
+<!--            &lt;!&ndash; Header &ndash;&gt;-->
+<!--            <div class="modal-header text-white" style="background-color: #2e5da1;">-->
+<!--                <h5 class="modal-title">Import dữ liệu</h5>-->
+<!--                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Body &ndash;&gt;-->
+<!--            <div class="modal-body">-->
+<!--                <form id="uploadForm" style="margin-left: 71px;">-->
+
+<!--                    <label for="fileInput" class="upload-box">-->
+<!--                        <div class="upload-icon">-->
+<!--                            <i class="bi bi-file-earmark-arrow-up"></i>-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <b>Kéo thả file vào đây</b> hoặc-->
+<!--                            <span class="text-primary">chọn file</span>-->
+<!--                        </div>-->
+<!--                        <small class="text-muted">-->
+<!--                            Hỗ trợ: .xlsx, .xls, .csv (Tối đa 10MB)-->
+<!--                        </small>-->
+<!--                        <input type="file" id="fileInput" hidden accept=".xls,.xlsx,.csv">-->
+<!--                    </label>-->
+
+<!--                </form>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Footer &ndash;&gt;-->
+<!--            <div class="modal-footer">-->
+<!--                <button class="btn btn-light" data-bs-dismiss="modal">Hủy</button>-->
+<!--                <button class="btn btn-primary" onclick="uploadFile()">Upload</button>-->
+<!--            </div>-->
+
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
 <div class="modal fade" id="uploadModal" tabindex="-1"
      aria-labelledby="uploadModalLabel" aria-hidden="true">
@@ -263,6 +367,42 @@ function confirmLock(element) {
         new bootstrap.Modal(document.getElementById('updateUserModal')).show();
     });
 });
+
+    const fileInput = document.getElementById('fileInput');
+const uploadBox = document.getElementById('uploadBox');
+const fileName = document.getElementById('fileName');
+const uploadBtn = document.getElementById('uploadBtn');
+
+// Drag & Drop
+uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+    uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect();
+    }
+});
+
+// File Input Change
+fileInput.addEventListener('change', handleFileSelect);
+
+function handleFileSelect() {
+    const file = fileInput.files[0];
+    if (file) {
+        fileName.textContent = '✓ ' + file.name;
+        uploadBtn.disabled = false;
+    }
+}
 </script>
 </body>
 </html>

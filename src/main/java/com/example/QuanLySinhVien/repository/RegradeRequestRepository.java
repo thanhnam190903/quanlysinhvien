@@ -1,5 +1,9 @@
 package com.example.QuanLySinhVien.repository;
 
+import com.example.QuanLySinhVien.dto.MediumProcessAndAcceptChangeRateSubjects;
+import com.example.QuanLySinhVien.dto.RegradeRequestByDepartmentSubjects;
+import com.example.QuanLySinhVien.dto.RegradeRequestSubjects;
+import com.example.QuanLySinhVien.dto.RejectAndAcceptSubjects;
 import com.example.QuanLySinhVien.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

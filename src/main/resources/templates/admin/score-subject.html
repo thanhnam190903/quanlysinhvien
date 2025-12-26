@@ -66,7 +66,7 @@
 
                 <section class="semester-section" th:each="cycle, iterStat : ${cycles}">
                     <div class="semester-header">
-                        <h2 class="semester-title" th:text="${cycle.name}" style="width: 60rem;"></h2>
+                        <h2 class="semester-title w-100" th:text="${cycle.name}" ></h2>
                     </div>
 
                     <div class="semester-stats">
@@ -133,13 +133,8 @@
                                 <td th:text="${score.attempt}"></td>
                                 <td th:text="${score.examAttempt}"></td>
                                 <td th:text="${score.totalScore}"></td>
-                                <td th:text="${#numbers.formatDecimal(T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.5 ? 4.0 :
-                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.0 ? 3.5 :
-                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 7.0 ? 3.0 :
-                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 6.5 ? 2.5 :
-                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 5.5 ? 2.0 :
-                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 5.0 ? 1.5 :
-                                (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 4.0 ? 1.0 : 0)))))), 1, 1)}"></td>
+                                <td th:text="${#numbers.formatDecimal(
+                                                    T(java.lang.Math).floor(((score.totalScore != null ? score.totalScore : 0) * 4 / 10) * 10) / 10, 1, 1)}"></td>
                                 <td th:text="${T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.5 ? 'A' :
                                 (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.0 ? 'B+' :
                                 (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 7.0 ? 'B' :
@@ -204,7 +199,6 @@
                                         <table class="table">
                                             <thead style="background:#f8fafc;">
                                             <tr>
-                                                <th>STT</th>
                                                 <th>Lần học</th>
                                                 <th>Lần thi</th>
                                                 <th>THI</th>
@@ -217,19 +211,13 @@
                                             </thead>
                                             <tbody>
                                             <tr>
-                                                <td th:text="${scoreStat.index + 1}"></td>
-                                                <td th:text="${score.subject.name}"></td>
-                                                <td th:text="${score.subject.credit}"></td>
                                                 <td th:text="${score.attempt}"></td>
                                                 <td th:text="${score.examAttempt}"></td>
+                                                <td th:text="${score.scoreFinal}"></td>
+                                                <td th:text="${score.scoreProcess}"></td>
                                                 <td th:text="${score.totalScore}"></td>
-                                                <td th:text="${#numbers.formatDecimal(T(java.lang.Double).valueOf(score.scoreProcess != null ? score.scoreProcess : 0) >= 8.5 ? 4.0 :
-                                                    (T(java.lang.Double).valueOf(score.scoreProcess != null ? score.scoreProcess : 0) >= 8.0 ? 3.5 :
-                                                    (T(java.lang.Double).valueOf(score.scoreProcess != null ? score.scoreProcess : 0) >= 7.0 ? 3.0 :
-                                                    (T(java.lang.Double).valueOf(score.scoreProcess != null ? score.scoreProcess : 0) >= 6.5 ? 2.5 :
-                                                    (T(java.lang.Double).valueOf(score.scoreProcess != null ? score.scoreProcess : 0) >= 5.5 ? 2.0 :
-                                                    (T(java.lang.Double).valueOf(score.scoreProcess != null ? score.scoreProcess : 0) >= 5.0 ? 1.5 :
-                                                    (T(java.lang.Double).valueOf(score.scoreProcess != null ? score.scoreProcess : 0) >= 4.0 ? 1.0 : 0)))))), 1, 1)}"></td>
+                                                <td th:text="${#numbers.formatDecimal(
+                                                    T(java.lang.Math).floor(((score.totalScore != null ? score.totalScore : 0) * 4 / 10) * 10) / 10, 1, 1)}"></td>
                                                                     <td th:text="${T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.5 ? 'A' :
                                                     (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 8.0 ? 'B+' :
                                                     (T(java.lang.Double).valueOf(score.totalScore != null ? score.totalScore : 0) >= 7.0 ? 'B' :

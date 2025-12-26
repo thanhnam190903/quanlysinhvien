@@ -106,21 +106,17 @@ public class StudentScoreController {
         return "admin/score-subject";
     }
     private double scoreFour(Double score) {
-        if (score == null) return 0;
-        if (score >= 8.5) return 4.0;
-        if (score >= 8.0) return 3.5;
-        if (score >= 7.0) return 3.0;
-        if (score >= 6.5) return 2.5;
-        if (score >= 5.5) return 2.0;
-        if (score >= 5.0) return 1.5;
-        if (score >= 4.0) return 1.0;
-        return 0;
+        if (score == null || score < 0) return 0.0;
+        if (score > 10) score = 10.0;
+        double gpa = score * 4 / 10;
+        return Math.round(gpa * 10.0) / 10.0;
     }
     private String calculateStatus(Double score) {
         if (score == null) return "";
-        if (score >= 3.6) return "GIỎI";
-        if (score >= 3.2) return "KHÁ";
-        if (score >= 2.5) return "TRUNG BÌNH";
+        if (score >= 3.6) return "Xuất sắc";
+        if (score >= 3.2) return "Giỏi";
+        if (score >= 2.5) return "Khá";
+        if (score >= 2.0) return "TRUNG BÌNH";
         return "YẾU";
     }
     private boolean canRequestRegrade(Subject subject) {
@@ -130,4 +126,5 @@ public class StudentScoreController {
                 !now.isBefore(subject.getRegradeStart()) &&
                 !now.isAfter(subject.getRegradeEnd());
     }
+
 }

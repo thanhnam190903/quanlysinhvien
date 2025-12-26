@@ -1,4 +1,4 @@
-package com.example.QuanLySinhVien.entity;
+package com.example.QuanLySinhVien.dto;
 
 public interface RejectAndAcceptSubjects {
     Long getAccept();

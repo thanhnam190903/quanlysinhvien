@@ -1,9 +1,9 @@
 package com.example.QuanLySinhVien.repository;
 
 import com.example.QuanLySinhVien.dto.ScoreSubjectProjection;
-import com.example.QuanLySinhVien.entity.HistogramStudentsSubjects;
-import com.example.QuanLySinhVien.entity.OutstandingStudentsSubjects;
-import com.example.QuanLySinhVien.entity.RatioScoreSubjects;
+import com.example.QuanLySinhVien.dto.HistogramStudentsSubjects;
+import com.example.QuanLySinhVien.dto.OutstandingStudentsSubjects;
+import com.example.QuanLySinhVien.dto.RatioScoreSubjects;
 import com.example.QuanLySinhVien.entity.ScoreSubject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

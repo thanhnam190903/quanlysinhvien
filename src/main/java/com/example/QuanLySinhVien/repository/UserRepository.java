@@ -1,9 +1,9 @@
 package com.example.QuanLySinhVien.repository;
 
-import com.example.QuanLySinhVien.entity.UserByDeptStatistics;
-import com.example.QuanLySinhVien.entity.UserRoleStatistics;
+import com.example.QuanLySinhVien.dto.UserByDeptStatistics;
+import com.example.QuanLySinhVien.dto.UserRoleStatistics;
 import com.example.QuanLySinhVien.entity.User;
-import com.example.QuanLySinhVien.entity.UserStatusStatistics;
+import com.example.QuanLySinhVien.dto.UserStatusStatistics;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +43,15 @@ public interface UserRepository extends JpaRepository<User,String> {
 
     @Query(" SELECT u FROM User u JOIN u.classes c JOIN u.roles r " +
             "WHERE c.id = :classId AND r.name = 'ROLE_student'")
-    List<User> findStudentsByClassId(@Param("classId") int classId);
+    Page<User> findStudentsByClassId(@Param("classId") int classId,Pageable pageable);
+
+    @Query("SELECT u FROM User u JOIN u.classes c JOIN u.roles r " +
+            "WHERE c.id = :classId AND r.name = 'ROLE_student' " +
+            "AND (LOWER(u.id) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(u.name) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<User> findStudentsByClassIdAndKeyword(@Param("classId") int classId,
+                                               @Param("keyword") String keyword,
+                                               Pageable pageable);
 
     @Query("SELECT u FROM User u JOIN u.classes c JOIN u.roles r " +
             "WHERE c.id = :classId AND r.name = 'ROLE_student' AND u.deleted = false " +

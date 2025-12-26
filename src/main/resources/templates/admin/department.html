@@ -39,7 +39,7 @@
                         <td th:if="${de.status}" style="color: red; font-weight: bold;">Tạm dừng</td>
                         <td th:if="${!de.status}" style="color: green;  font-weight: bold;">Hoạt động</td>
                         <td>
-                            <div class="action-icons">
+                            <div class="action-icons justify-content-center align-items-center">
                                 <div class="action-icons">
                                     <a class="text-success" th:href="@{/staff/classes(id=${de.id})}"><i class="far fa-eye"></i></a>
                                     <a href="" class="text-success" data-bs-toggle="modal" data-bs-target="#updateDepartmentModal"></a>

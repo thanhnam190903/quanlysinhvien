@@ -54,9 +54,10 @@
     }
 
     .stat-value {
+        margin-right: 56px;
         font-size: 36px;
         font-weight: 700;
-        color: #1a1a1a;
+
     }
 
     .stat-icon {
@@ -218,7 +219,7 @@
                 <div class="stats-grid">
                     <div class="stat-card stat-card-blue">
                         <div class="stat-label">TỔNG MÔN HỌC</div>
-                        <div class="stat-value" th:text="${totalSubjects}"></div>
+                        <div class="stat-value" id="stat-value-1" th:text="${totalSubjects}"></div>
                         <div class="stat-icon">
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                                 <rect x="6" y="8" width="20" height="16" rx="2" stroke="white" stroke-width="2"/>
@@ -229,7 +230,7 @@
 
                     <div class="stat-card stat-card-green">
                         <div class="stat-label">ĐÃ KẾT THÚC</div>
-                        <div class="stat-value" th:text="${countFinished}"></div>
+                        <div class="stat-value" id="stat-value-2" th:text="${countFinished}"></div>
                         <div class="stat-icon">
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                                 <circle cx="16" cy="16" r="10" stroke="white" stroke-width="2"/>
@@ -240,7 +241,7 @@
 
                     <div class="stat-card stat-card-yellow">
                         <div class="stat-label">ĐANG DIỄN RA</div>
-                        <div class="stat-value" th:text="${countOngoing}"></div>
+                        <div class="stat-value" id="stat-value-3" th:text="${countOngoing}"></div>
                         <div class="stat-icon">
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                                 <path d="M16 8L18 14L24 16L18 18L16 24L14 18L8 16L14 14L16 8Z" fill="white"/>
@@ -250,7 +251,7 @@
 
                     <div class="stat-card stat-card-purple">
                         <div class="stat-label">TỔNG TÍN CHỈ</div>
-                        <div class="stat-value" th:text="${totalCredits}"></div>
+                        <div class="stat-value" id="stat-value-4" th:text="${totalCredits}"></div>
                         <div class="stat-icon">
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
                                 <rect x="10" y="10" width="12" height="12" rx="2" stroke="white" stroke-width="2"/>
